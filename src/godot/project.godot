@@ -11,5 +11,10 @@ config_version=5
 [application]
 
 config/name="RobotDockCenter"
+run/main_scene="res://main_scene_3d.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/mode=2

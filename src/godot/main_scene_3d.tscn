@@ -1,0 +1,94 @@
+[gd_scene load_steps=11 format=3 uid="uid://do6tb11f2ouuy"]
+
+[ext_resource type="Environment" uid="uid://c7hvcv57ofo1k" path="res://environment.tres" id="1_b4ds7"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_mb5nr"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_wdltp"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_frurv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d1bqv"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_j360i"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_2nmys"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xw1n"]
+diffuse_mode = 2
+albedo_color = Color(1, 0, 0.0941176, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gujig"]
+diffuse_mode = 2
+albedo_color = Color(0.396078, 0.87451, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stp60"]
+diffuse_mode = 2
+albedo_color = Color(0.313726, 0.545098, 1, 1)
+
+[node name="main_scene_3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, -0.22114, 0.975242, 8.88178e-16, 0.975242, 0.22114, -1, 9.66634e-09, -4.26292e-08, -4.91264, 1.78035, 0.193001)
+environment = ExtResource("1_b4ds7")
+current = true
+fov = 64.4793
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.943006, -0.249105, -0.220651, 0.0915396, -0.443302, 0.891686, -0.319939, -0.861063, -0.395233, -0.310905, 13.888, -3.39603)
+shadow_enabled = true
+
+[node name="meshes" type="Node" parent="."]
+
+[node name="walls&floors" type="Node" parent="meshes"]
+
+[node name="Floor" type="MeshInstance3D" parent="meshes/walls&floors"]
+transform = Transform3D(32.0731, 0, 0, 0, 0.00243026, 0, 0, 0, 15.7952, -0.156143, 0, 0)
+mesh = SubResource("BoxMesh_mb5nr")
+skeleton = NodePath("../../..")
+
+[node name="Wall1" type="MeshInstance3D" parent="meshes/walls&floors"]
+transform = Transform3D(33.0872, 0, 0, 0, 6.93251, 0, 0, 0, 0.112501, -0.239158, 3.3123, 7.8337)
+mesh = SubResource("BoxMesh_wdltp")
+
+[node name="Wall2" type="MeshInstance3D" parent="meshes/walls&floors"]
+transform = Transform3D(33.0872, 0, 0, 0, 6.93251, 0, 0, 0, 0.112501, -0.239158, 3.3123, -7.5966)
+mesh = SubResource("BoxMesh_wdltp")
+
+[node name="Wall3" type="MeshInstance3D" parent="meshes/walls&floors"]
+transform = Transform3D(-6.88632e-07, 2.34721e-15, 0.112501, 5.49481e-15, 6.72965, -3.92387e-17, -15.7541, 2.34721e-15, -4.91756e-09, 15.8576, 3.26288, -0.130948)
+mesh = SubResource("BoxMesh_wdltp")
+
+[node name="Wall4" type="MeshInstance3D" parent="meshes/walls&floors"]
+transform = Transform3D(-6.88632e-07, 2.34721e-15, 0.112501, 5.49481e-15, 6.72965, -3.92387e-17, -15.7541, 2.34721e-15, -4.91756e-09, -16.0131, 3.20285, -0.130948)
+mesh = SubResource("BoxMesh_wdltp")
+
+[node name="Dock" type="Node" parent="meshes"]
+
+[node name="base" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(1, 0, 0, 0, 0.137319, 0, 0, 0, 2.39471, -13.5316, 0.0628397, 0.210237)
+mesh = SubResource("BoxMesh_frurv")
+surface_material_override/0 = SubResource("StandardMaterial3D_d1bqv")
+
+[node name="back" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(-2.78387e-08, -0.124661, 6.09699e-16, 0.636876, -5.44912e-09, -6.09699e-16, 2.22134e-16, 4.34803e-17, 1.74806, -13.6144, 0.325651, 0.198133)
+mesh = SubResource("BoxMesh_j360i")
+
+[node name="DockIndicator" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.414758, 0.188346)
+mesh = SubResource("CylinderMesh_2nmys")
+surface_material_override/0 = SubResource("StandardMaterial3D_0xw1n")
+
+[node name="DockIndicator2" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.292232, 0.821855)
+mesh = SubResource("CylinderMesh_2nmys")
+surface_material_override/0 = SubResource("StandardMaterial3D_gujig")
+
+[node name="DockIndicator3" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.292232, -0.434364)
+mesh = SubResource("CylinderMesh_2nmys")
+surface_material_override/0 = SubResource("StandardMaterial3D_stp60")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_b4ds7")

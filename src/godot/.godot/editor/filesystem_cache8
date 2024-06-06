@@ -1,3 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1717636436
+::res://::1717637780
 icon.svg::CompressedTexture2D::8397093227873724557::1717636433::1717636436::1::::<><>::
+main_scene_3d.tscn::PackedScene::8207058387079928144::1717637780::0::1::::<><>::uid://bdw5aw18tk56o::::res://world_environment.tscn
+main_scene_3d.tres::Environment::7034614787324903742::1717637875::0::1::::<><>::
