@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://do6tb11f2ouuy"]
+[gd_scene load_steps=12 format=3 uid="uid://do6tb11f2ouuy"]
 
 [ext_resource type="Environment" uid="uid://c7hvcv57ofo1k" path="res://environment.tres" id="1_b4ds7"]
+[ext_resource type="Script" path="res://main_camera.gd" id="2_7vk5s"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_mb5nr"]
 
@@ -29,11 +30,12 @@ albedo_color = Color(0.313726, 0.545098, 1, 1)
 
 [node name="main_scene_3D" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="main_camera" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.22114, 0.975242, 8.88178e-16, 0.975242, 0.22114, -1, 9.66634e-09, -4.26292e-08, -4.91264, 1.78035, 0.193001)
 environment = ExtResource("1_b4ds7")
 current = true
 fov = 64.4793
+script = ExtResource("2_7vk5s")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.943006, -0.249105, -0.220651, 0.0915396, -0.443302, 0.891686, -0.319939, -0.861063, -0.395233, -0.310905, 13.888, -3.39603)
@@ -80,12 +82,12 @@ transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6
 mesh = SubResource("CylinderMesh_2nmys")
 surface_material_override/0 = SubResource("StandardMaterial3D_0xw1n")
 
-[node name="DockIndicator2" type="MeshInstance3D" parent="meshes/Dock"]
+[node name="ChargePort1" type="MeshInstance3D" parent="meshes/Dock"]
 transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.292232, 0.821855)
 mesh = SubResource("CylinderMesh_2nmys")
 surface_material_override/0 = SubResource("StandardMaterial3D_gujig")
 
-[node name="DockIndicator3" type="MeshInstance3D" parent="meshes/Dock"]
+[node name="ChargePort2" type="MeshInstance3D" parent="meshes/Dock"]
 transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.292232, -0.434364)
 mesh = SubResource("CylinderMesh_2nmys")
 surface_material_override/0 = SubResource("StandardMaterial3D_stp60")
