@@ -30,13 +30,6 @@ albedo_color = Color(0.313726, 0.545098, 1, 1)
 
 [node name="main_scene_3D" type="Node3D"]
 
-[node name="main_camera" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, -0.22114, 0.975242, 8.88178e-16, 0.975242, 0.22114, -1, 9.66634e-09, -4.26292e-08, -4.91264, 1.78035, 0.193001)
-environment = ExtResource("1_b4ds7")
-current = true
-fov = 64.4793
-script = ExtResource("2_7vk5s")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.943006, -0.249105, -0.220651, 0.0915396, -0.443302, 0.891686, -0.319939, -0.861063, -0.395233, -0.310905, 13.888, -3.39603)
 shadow_enabled = true
@@ -94,3 +87,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_stp60")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_b4ds7")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="main_camera" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-4.37114e-08, -0.22114, 0.975242, 8.88178e-16, 0.975242, 0.22114, -1, 9.66634e-09, -4.26292e-08, -4.91264, 1.78035, 0.193001)
+environment = ExtResource("1_b4ds7")
+current = true
+fov = 64.4793
+script = ExtResource("2_7vk5s")

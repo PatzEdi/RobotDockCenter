@@ -2,3 +2,9 @@
 *__pycache__
 *.import
 *.cache
+*.md5
+*.ctex
+*.png
+*.translation
+
+src/godot/data_text/image_info_data.txt
