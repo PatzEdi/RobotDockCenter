@@ -9,8 +9,8 @@ var reverse_line_distance_from_dock = 2 # distance between the reverse line and 
 # Let's define some hyperparameters for the image gathering:
 var save_images = true # Determines whether or not to save the images in the current run.
 var num_images_per_class = 50 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
-var num_classes = 1 # There are three classes as of now (a fourth will be added later): center, left, and right
-
+var num_classes = 3 # There are three classes as of now (a fourth will be added later): center, left, and right
+var num_classes_counter = 0
 # This counter will count the amount of images we have taken. It will be used to assign image names e.g. image_1.png, image_2.png, etc.
 var global_image_counter = 0
 
@@ -20,6 +20,7 @@ var perfectly_centered = true
 # This below is to save the image lines to then put in a file.
 var image_data_lines = []
 
+var reverse_line_pos # This is the reverse line position that image functions from the first phase will be using (first phase is the one pre-reverse line point being reached)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	await get_tree().process_frame # We wait for the frames to render as an extra precaution to avoid null/black viewport textures.
@@ -37,21 +38,33 @@ func _ready():
 	self.transform.origin.x = DockIndicator.global_position.x + reverse_line_distance_from_dock # We start at the reverse line. This is important because each function that moves the camera then comes back to this position after taking the picture. original_pos in the functions essentially represent the reverse line.
 	self.transform.origin.y = DockIndicator.global_position.y + .3 # .3 is chosen has the level of the y axis for the camera. It aims it more down toward the reverse line rather than leveled, which would be unrealistic on the robot at hand.
 	self.transform.origin.z = DockIndicator.global_position.z
+	
+	reverse_line_pos = self.transform.origin
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	# We make half of the images facing directly, and half of the images not facing directly.
-	if (global_image_counter >= (num_images_per_class*num_classes)/2):
-		perfectly_centered = false
-	# Put your code here, to move the camera (e.g functions):
-	get_center_image() # Get's a single image in the center line.
+	if (global_image_counter >= (num_images_per_class/2)+(num_images_per_class*num_classes_counter)):
+		perfectly_centered = false # We need to fix this next, possibly by updating a counter variable in the if statements, and replacing the num_classes variable here with that counter variable
+	else:
+		perfectly_centered = true
+	# NOTE: We need to add if statements here regarding the counter variables. We can't just add all the image gathering functions here, because otherwise Godot will execute all three PER FRAME, which is not possible and will cause failure.
+	# We put the functions for each image class:
 	
-	#get_left_image() # Get's a single image to the left of the center line.
+	if (global_image_counter < num_images_per_class):
+		get_center_image() # Get's a single image in the center line.
+	elif (global_image_counter < num_images_per_class*2):
+		if (num_images_per_class==global_image_counter): # This is to forcefully make the last image of the previous loop perfectly centered.
+			perfectly_centered = true
+		num_classes_counter = 1
+		get_left_image() # Get's a single image to the left of the center line.
+	elif (global_image_counter < num_images_per_class*3):
+		if (num_images_per_class*2==global_image_counter):
+			perfectly_centered = true
+		num_classes_counter = 2
+		get_right_image() # Get's a single image to the right of the center line.
 	
-	#get_right_image() # Get's a single image to the right of the center line.
-	
-	if (global_image_counter == num_images_per_class * num_classes):
-		
+	if (global_image_counter == (num_images_per_class * num_classes)):
 		if (save_images):
 			print("\nWriting image data lines to file...")
 			write_lines_to_file()
@@ -65,16 +78,15 @@ func _process(_delta):
 
 func get_center_image():
 	# Put your code here to move the camera:
-	var original_pos = self.transform.origin # original_pos is equal to the reverse line point.
 	var random_x = randf_range(1,7)
 	
 	self.transform.origin.x += random_x
 	
 	var rotation_value = get_rotation_value()
 	
-	await get_tree().process_frame # We wait for the fram to render
+	await get_tree().process_frame # We wait for the frame to render
 	
-	var distance_from_reverse_line = self.transform.origin.distance_to(original_pos)
+	var distance_from_reverse_line = self.transform.origin.distance_to(reverse_line_pos)
 	
 	var img = get_viewport().get_texture().get_image()
 	
@@ -83,30 +95,62 @@ func get_center_image():
 	# Save the image and append to the image_data_lines list.
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ", Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Center, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
 	
 	# Then, we move back to the original position.
-	self.transform.origin = original_pos
+	self.transform.origin = reverse_line_pos
 
 func get_left_image():
 	# Put your code here to move the camera:
+	# We now not only need a random number for the x (vertical), but we also need a random value for the z (horizontal)
+	var random_x = randf_range(1,7)
+	var random_z = randf_range(.5,4)# For the left, we need to generate positive numbers
 	
+	self.transform.origin.x += random_x
+	self.transform.origin.z += random_z
+	
+	var rotation_value = get_rotation_value(25) # We get the rotation value needed to face the reverse point indicator
+	
+	await get_tree().process_frame # We wait for the frame to render
+	
+	var distance_from_reverse_line = self.transform.origin.distance_to(reverse_line_pos)
+	
+	var img = get_viewport().get_texture().get_image()
 	
 	global_image_counter += 1
 	
 	# Put your code here to save the image:
 	if (save_images):
-		pass
+		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
+		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Left, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+	
+	self.transform.origin = reverse_line_pos # We move the camera back to its original position
 
 func get_right_image():
 	# Put your code here to move the camera:
+	# We now not only need a random number for the x (vertical), but we also need a random value for the z (horizontal)
+	var random_x = randf_range(1,7)
+	var random_z = randf_range(-4,-.5)# For the left, we need to generate positive numbers
 	
+	self.transform.origin.x += random_x
+	self.transform.origin.z += random_z
+	
+	var rotation_value = get_rotation_value(25) # We get the rotation value needed to face the reverse point indicator
+	
+	await get_tree().process_frame # We wait for the frame to render
+	
+	var distance_from_reverse_line = self.transform.origin.distance_to(reverse_line_pos)
+	
+	var img = get_viewport().get_texture().get_image()
 	
 	global_image_counter += 1
 	
 	# Put your code here to save the image:
 	if (save_images):
-		pass
+		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
+		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Right, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+	
+	self.transform.origin = reverse_line_pos # We move the camera back to its original position
 
 # This will be done soon as well, it is to get images at the reverse line point. Instead of looking at the reverse point line, we look at the DockIndicator, and thus the rotation value will be according to the Dock indicator.
 func get_reverse_line_point_image():
