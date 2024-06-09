@@ -8,7 +8,7 @@ var reverse_line_distance_from_dock = 2 # distance between the reverse line and 
 
 # Let's define some hyperparameters for the image gathering:
 var save_images = true # Determines whether or not to save the images in the current run.
-var num_images_per_class = 50 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
+var num_images_per_class = 100 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
 var num_classes = 3 # There are three classes as of now (a fourth will be added later): center, left, and right
 var num_classes_counter = 0
 # This counter will count the amount of images we have taken. It will be used to assign image names e.g. image_1.png, image_2.png, etc.
@@ -26,7 +26,7 @@ func _ready():
 	await get_tree().process_frame # We wait for the frames to render as an extra precaution to avoid null/black viewport textures.
 	
 	# We set a title for the elements in the data file in csv format:
-	image_data_lines.append("Image, Distance_rline, Random_x, Rotation_value")
+	image_data_lines.append("Image,Type,Direction,Distance_rline,Rotation_value")
 	
 	# Let's print out some information based on the hyperparameters defined above:
 	if (save_images):
@@ -35,7 +35,7 @@ func _ready():
 		print("SAVE IMAGES IS FALSE, IMAGES WILL NOT BE SAVED")
 	
 	# Let's center the camera so that it is not too high but also not too low:
-	self.transform.origin.x = DockIndicator.global_position.x + reverse_line_distance_from_dock # We start at the reverse line. This is important because each function that moves the camera then comes back to this position after taking the picture. original_pos in the functions essentially represent the reverse line.
+	self.transform.origin.x = DockIndicator.global_position.x + reverse_line_distance_from_dock # We start at the reverse line. This is important because each function that moves the camera then comes back to this position after taking the picture.
 	self.transform.origin.y = DockIndicator.global_position.y + .3 # .3 is chosen has the level of the y axis for the camera. It aims it more down toward the reverse line rather than leveled, which would be unrealistic on the robot at hand.
 	self.transform.origin.z = DockIndicator.global_position.z
 	
@@ -48,8 +48,9 @@ func _process(_delta):
 		perfectly_centered = false # We need to fix this next, possibly by updating a counter variable in the if statements, and replacing the num_classes variable here with that counter variable
 	else:
 		perfectly_centered = true
-	# NOTE: We need to add if statements here regarding the counter variables. We can't just add all the image gathering functions here, because otherwise Godot will execute all three PER FRAME, which is not possible and will cause failure.
-	# We put the functions for each image class:
+	
+	
+	# NOTE: if statements regarding the counter variables are vital here. We can't just add all the image gathering functions here, because otherwise Godot will execute all the function calls PER FRAME, which is not possible and will cause failure.
 	
 	if (global_image_counter < num_images_per_class):
 		get_center_image() # Get's a single image in the center line.
@@ -72,9 +73,6 @@ func _process(_delta):
 		print("\nGathering of data has finished.")
 
 		get_tree().quit() # terminate the data gathering.
-	
-# PARAMS for the functions below:
-# 1. perfectly_centered deterimes whether or not the pictures taken are directly facing the reverse line point (true). If this is toggled off (false), the pictures taken will not be facing directly, and thus there will be a rotation value other than 0.
 
 func get_center_image():
 	# Put your code here to move the camera:
@@ -95,10 +93,9 @@ func get_center_image():
 	# Save the image and append to the image_data_lines list.
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Center, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,center,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
 	
-	# Then, we move back to the original position.
-	self.transform.origin = reverse_line_pos
+	self.transform.origin = reverse_line_pos # Then, we move back to the original position, which is the reverse point line.
 
 func get_left_image():
 	# Put your code here to move the camera:
@@ -122,15 +119,15 @@ func get_left_image():
 	# Put your code here to save the image:
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Left, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,left,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
 	
-	self.transform.origin = reverse_line_pos # We move the camera back to its original position
+	self.transform.origin = reverse_line_pos # We move the camera back to its original position, which is the reverse point line.
 
 func get_right_image():
 	# Put your code here to move the camera:
 	# We now not only need a random number for the x (vertical), but we also need a random value for the z (horizontal)
 	var random_x = randf_range(1,7)
-	var random_z = randf_range(-4,-.5)# For the left, we need to generate positive numbers
+	var random_z = randf_range(-4,-.5)# For the right, we need to generate positive numbers
 	
 	self.transform.origin.x += random_x
 	self.transform.origin.z += random_z
@@ -148,11 +145,12 @@ func get_right_image():
 	# Put your code here to save the image:
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ", Type: Right, Distance rline: " + str(distance_from_reverse_line) + ", random_x: " + str(random_x) + ", rotation_value: " + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,right,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
 	
 	self.transform.origin = reverse_line_pos # We move the camera back to its original position
 
 # This will be done soon as well, it is to get images at the reverse line point. Instead of looking at the reverse point line, we look at the DockIndicator, and thus the rotation value will be according to the Dock indicator.
+# For these images, there will be some threshold in terms of distance. Perhaps +/= the reverse_line_distance_from_dock
 func get_reverse_line_point_image():
 	pass
 # This will be configured later. It is used to get the images that have passed the reverse line. This is useful if the robot is placed passed the reverse line manually. It will consist of going backward rather than forward.
@@ -176,7 +174,7 @@ func get_rotation_value(degree_range=30):
 		# The random rotation still needs to be thought out. Instead of a random number within a fixed range, we should most likely make such a range adaptive according to the distance from the reverse point and the camera. The farther away, the greater the range, and vice versa. This is because as we get closer, the ability to fit in the entire within a fixed range dock gets smaller. (Verify this? Perhaps we want it to learn to move even when only some of the dock can be seen)
 		# For now, though, we use a fixed range.
 		# The degree_range parameter is in plus/minus. In other words it is the max amount that the random rotation can go away from 0, either positive or negative. This IS in degrees.
-		rotation_value = randi_range(-degree_range, degree_range) # The random rotation value, which will also be used as a data point for the image being taken.
+		rotation_value = randf_range(-degree_range, degree_range) # The random rotation value, which will also be used as a data point for the image being taken.
 		self.rotation.y += deg_to_rad(rotation_value) # IMPORTANT: We need to convert the degrees generated into radians, as that is how Godot stores the rotation values.
 		# Note: Positive rotation_value = rotate left. Negative rotation value = rotate right.
 	return rotation_value
