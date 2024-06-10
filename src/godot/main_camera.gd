@@ -9,8 +9,12 @@ var reverse_line_distance_from_dock = 2 # distance between the reverse line and 
 # Let's define some hyperparameters for the image gathering:
 var save_images = true # Determines whether or not to save the images in the current run.
 var num_images_per_class = 100 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
-var num_classes = 3 # There are three classes as of now (a fourth will be added later): center, left, and right
+var num_classes = 4 # There are three classes as of now (a fourth will be added later): center, left, and right
 var num_classes_counter = 0
+
+var at_rline_point_extra_image_num = (num_images_per_class)*(num_classes-2) # These are extra images to take of just images at the reverse line. This is in order for the data set to be more balanced in terms of the direction value -1, 0, or 1 specifically.
+var surpassed_rline_extra_image_num = (num_images_per_class)*(num_classes-2) # Same thing as above but for surpassed images, aka images either too far close to the Dock that aren't centered, or images that are at the reverse line point but are too left or too right.
+
 # This counter will count the amount of images we have taken. It will be used to assign image names e.g. image_1.png, image_2.png, etc.
 var global_image_counter = 0
 
@@ -64,8 +68,18 @@ func _process(_delta):
 			perfectly_centered = true
 		num_classes_counter = 2
 		get_right_image() # Get's a single image to the right of the center line.
-	
-	if (global_image_counter == (num_images_per_class * num_classes)):
+	elif (global_image_counter < (num_images_per_class*4)+at_rline_point_extra_image_num):
+		if (num_images_per_class*3==global_image_counter):
+			perfectly_centered = true
+		num_classes_counter = 4 # We change this due to the extra images for this class added to make the dataset more equal.
+		get_reverse_line_point_image()
+	# NOTE: To add another class with extra images like the one above:
+	"""
+	1. Add the extra image amount to what global_image_counter should be less to.
+	2. Change the num_classes counter so that the amount of centered and rotated images is equal, even when taking into account the extra images.
+	3. Add the extra image amount to the if statement below, to deterime when the program should stop based on the amount of images that should be taken.
+	"""
+	if (global_image_counter == (num_images_per_class * num_classes)+at_rline_point_extra_image_num):
 		if (save_images):
 			print("\nWriting image data lines to file...")
 			write_lines_to_file()
@@ -76,7 +90,7 @@ func _process(_delta):
 
 func get_center_image():
 	# Put your code here to move the camera:
-	var random_x = randf_range(1,7)
+	var random_x = randf_range(.5,7)
 	
 	self.transform.origin.x += random_x
 	
@@ -100,7 +114,7 @@ func get_center_image():
 func get_left_image():
 	# Put your code here to move the camera:
 	# We now not only need a random number for the x (vertical), but we also need a random value for the z (horizontal)
-	var random_x = randf_range(1,7)
+	var random_x = randf_range(.5,7)
 	var random_z = randf_range(.5,4)# For the left, we need to generate positive numbers
 	
 	self.transform.origin.x += random_x
@@ -126,7 +140,7 @@ func get_left_image():
 func get_right_image():
 	# Put your code here to move the camera:
 	# We now not only need a random number for the x (vertical), but we also need a random value for the z (horizontal)
-	var random_x = randf_range(1,7)
+	var random_x = randf_range(.5,7)
 	var random_z = randf_range(-4,-.5)# For the right, we need to generate positive numbers
 	
 	self.transform.origin.x += random_x
@@ -152,8 +166,28 @@ func get_right_image():
 # This will be done soon as well, it is to get images at the reverse line point. Instead of looking at the reverse point line, we look at the DockIndicator, and thus the rotation value will be according to the Dock indicator.
 # For these images, there will be some threshold in terms of distance. Perhaps +/= the reverse_line_distance_from_dock
 func get_reverse_line_point_image():
-	pass
-# This will be configured later. It is used to get the images that have passed the reverse line. This is useful if the robot is placed passed the reverse line manually. It will consist of going backward rather than forward.
+	
+	var random_x = randf_range(-.5,.5) # We set a small threshold so as to not make the reverse line point exact/very hard to reach.
+	self.transform.origin.x += random_x # We move the camera
+	
+	# We now look at the dock:
+	var rotation_value = get_rotation_value(20,true)
+	
+	await get_tree().process_frame
+	
+	var distance_from_reverse_line = self.transform.origin.distance_to(reverse_line_pos)
+	# The reverse line point is essentially a rectangle with some threshold to it. It isn't a perfect point.
+	var img = get_viewport().get_texture().get_image()
+	
+	global_image_counter += 1
+	# Put your code here to save the image:
+	if (save_images):
+		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
+		# We apply the distance value even if it isn't zero, so that the model learns that there is some threshold.
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,at_rline,0," + str(distance_from_reverse_line)+ "," + str(rotation_value))
+
+	self.transform.origin = reverse_line_pos
+# These images will be images that have surpassed the reverse line point, or that they are too left or right to be considered to be in the reverse line point.
 func get_surpassed_images():
 	# Put your code here:
 	
@@ -165,10 +199,14 @@ func get_surpassed_images():
 		pass
 
 # This is for the rotation value:
-func get_rotation_value(degree_range=30):
+func get_rotation_value(degree_range=30, look_at_dock=false):
 	var rotation_value = 0
-	# We look at the reverse line point.
-	self.look_at(Vector3(DockIndicator.global_position.x + reverse_line_distance_from_dock, DockIndicator.global_position.y, DockIndicator.global_position.z))
+	if (look_at_dock):
+		self.look_at(Vector3(DockIndicator.global_position.x, DockIndicator.global_position.y, DockIndicator.global_position.z))
+	else:
+		# We look at the reverse line point.
+		self.look_at(Vector3(DockIndicator.global_position.x + reverse_line_distance_from_dock, DockIndicator.global_position.y, DockIndicator.global_position.z))
+	
 	# After that, we add a random rotation to it if perfectly_centered is false. perfectly centered will most likely be a global variable, rater than a parameter of these functions.
 	if (!perfectly_centered):
 		# The random rotation still needs to be thought out. Instead of a random number within a fixed range, we should most likely make such a range adaptive according to the distance from the reverse point and the camera. The farther away, the greater the range, and vice versa. This is because as we get closer, the ability to fit in the entire within a fixed range dock gets smaller. (Verify this? Perhaps we want it to learn to move even when only some of the dock can be seen)
