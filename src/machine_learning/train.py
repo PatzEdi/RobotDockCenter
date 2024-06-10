@@ -70,13 +70,13 @@ class Predictor(nn.Module):
 # Here is the training part:
 if __name__=="__main__": # This is used to prevent the code below from running when calling this script from another script, specifically the inference.py script.
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
-    learning_rate = 0.001
-    batch_size = 16 # Leave at one for stochastic gradient descent
-    num_epochs = 5
+    learning_rate = 0.0005
+    batch_size = 8 # Leave at one for stochastic gradient descent
+    num_epochs = 35
     
     # [Experimental] determine the importance of each loss value:
-    weight_direction = .9
-    weight_distance = .85
+    weight_direction = .95
+    weight_distance = .9
     weight_rotation_value = 1.0
 
     print(f"Learning Rate: {learning_rate}\nBatch Size: {batch_size}\nNum Training Epochs: {num_epochs}")
@@ -89,7 +89,7 @@ if __name__=="__main__": # This is used to prevent the code below from running w
     print("Starting training stage...\n")
     # Let's instantiate the model, criterion, and optimizer:
     model = Predictor()
-    criterion = nn.L1Loss()
+    criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate) # We use Adam for adaptive learning rates rather the SGD (To be tested and experimented with in the future...)
     
     loss_values = [] # This list will be used to store the loss values for each epoch.
@@ -99,9 +99,8 @@ if __name__=="__main__": # This is used to prevent the code below from running w
             optimizer.zero_grad()
 
             outputs = model(images) # Retreive the model's output
-            # print(outputs[0], targets[0])
-            # exit()
-            loss = weight_direction * criterion(outputs[0], targets[0]) + weight_distance * criterion(outputs[1], targets[1]) + weight_rotation_value * criterion(outputs[2], targets[2])
+
+            loss = weight_direction * criterion(outputs[0].double(), targets[0]) + weight_distance * criterion(outputs[1].double(), targets[1]) + weight_rotation_value * criterion(outputs[2].double(), targets[2])
             loss.backward()
             optimizer.step()
         # Print some info:

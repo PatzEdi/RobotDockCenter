@@ -15,7 +15,7 @@ data_image_text_path = os.path.join(current_script_path, '../godot/data_text/ima
 
 print("\nLoading data from: " + data_image_text_path + "using polars...")
 # Let's read and load the data from a csv file using polars (very fast)
-df = pl.read_csv(data_image_text_path) # We technically have all of the data here to train the model. Thanks polars for making it so easy! :)
+df = pl.read_csv(data_image_text_path, infer_schema_length=10000) # We technically have all of the data here to train the model. Thanks polars for making it so easy! :)
 # Let's print out the contents:
 print(df)
 # Let's print out the amount of images that are in the data, which is the amount of rows:
@@ -37,5 +37,5 @@ def get_data_targets(torch,convert_targets_to_tensor=False):
     if (convert_targets_to_tensor):
         for i in range(len(data_targets)):
             for i2 in range(len(data_targets[i])):
-                data_targets[i][i2] = torch.tensor(data_targets[i][i2], dtype=torch.int64) if i2 == 0 else torch.tensor(data_targets[i][i2], dtype=torch.float64)
+                data_targets[i][i2] = torch.tensor(data_targets[i][i2], dtype=torch.float64) # if i2 == 0 else torch.tensor(data_targets[i][i2], dtype=torch.float64)
     return data_targets
