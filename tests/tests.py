@@ -20,7 +20,7 @@ class TestDataProcess(unittest.TestCase):
         df = pl.read_csv(test_csv_path)
 
         # Assert that the DataFrame has the correct shape
-        self.assertEqual(df.shape, (300, 5))
+        self.assertEqual(df.shape, (600, 5))
 
 if __name__ == '__main__':
     unittest.main()
