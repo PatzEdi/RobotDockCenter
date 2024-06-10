@@ -6,6 +6,7 @@
 *.ctex
 *.png
 *.translation
+*.pth
 
 .vscode
 src/godot/data_text/image_info_data.txt
