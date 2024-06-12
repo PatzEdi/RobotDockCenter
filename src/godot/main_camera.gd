@@ -260,7 +260,7 @@ func test_positional_movement_x():
 
 # Used to write the contents of image_data_lines to a file:
 func write_lines_to_file():
-	var file = FileAccess.open("res://data_text/image_info_data.txt", FileAccess.WRITE)
+	var file = FileAccess.open("res://data_text/image_info_data.csv", FileAccess.WRITE)
 	for element in image_data_lines:
 		file.store_line(element)
 	file.close()

@@ -11,7 +11,7 @@ print("\nDone importing libraries.")
 current_script_path = os.path.dirname(os.path.abspath(__file__))
 # These are the main paths we will be using:
 data_images_path = os.path.join(current_script_path, '../godot/data_images')
-data_image_text_path = os.path.join(current_script_path, '../godot/data_text/image_info_data.txt')
+data_image_text_path = os.path.join(current_script_path, '../godot/data_text/image_info_data.csv')
 
 print("\nLoading data from: " + data_image_text_path + "using polars...")
 # Let's read and load the data from a csv file using polars (very fast)

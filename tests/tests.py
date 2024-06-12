@@ -6,7 +6,7 @@ import sys
 class TestDataProcess(unittest.TestCase):
     def test_data_size(self):
         # Define a path to a test CSV file
-        test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data.txt')
+        test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data.csv')
 
 
         # Read the CSV file using the function you're testing

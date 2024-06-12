@@ -39,7 +39,7 @@ def parse_outputs(outputs):
     # Let's floor down the first value to zero if it is less than .5, and ceil it if it is above .5:
     if (predicted_values[0] < .5):
         predicted_values[0] = 0
-    elif (predicted_values[0] > .5):
+    elif (predicted_values[0] >= .5):
         predicted_values[0] = 1
 
     return predicted_values
