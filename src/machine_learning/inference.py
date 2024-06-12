@@ -25,7 +25,13 @@ def predict(image_path):
     with train.torch.no_grad():
         outputs = model(image)
     return outputs
-
+def predict_with_image_obj(image):
+    image = train.transform(image)
+    image = train.torch.unsqueeze(image, 0) # Add a batch dimension
+    # Now we can pass the image to the model and get the predicted values:
+    with train.torch.no_grad():
+        outputs = model(image)
+    return outputs
 # This is the the function that parses the outputs from the function above and either ceils or floors the direction output, as well as removes the tensor form of each value
 def parse_outputs(outputs):
     predicted_values = [value.item() for value in outputs]
@@ -75,4 +81,4 @@ def shuffle_images():
     return [image_paths[i] for i in indices], [data_targets[i] for i in indices]
 #predict_single_image(1)
 #scan_all_images(print_output=True) # This will print out the predicted values for all of the images in the data_images folder, realtime
-show_images_with_plt()
+#show_images_with_plt()

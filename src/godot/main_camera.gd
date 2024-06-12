@@ -7,7 +7,7 @@ extends Camera3D
 var reverse_line_distance_from_dock = 2 # distance between the reverse line and the dock.
 
 # Let's define some hyperparameters for the image gathering:
-var save_images = true # Determines whether or not to save the images in the current run.
+var save_images = false # Determines whether or not to save the images in the current run.
 var num_images_per_class = 300 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
 var num_classes = 4 # There are three classes as of now (a fourth will be added later): center, left, and right
 var num_classes_counter = 0

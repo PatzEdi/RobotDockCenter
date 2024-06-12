@@ -1,7 +1,7 @@
 SubViewport
 SubViewportContainer
+Camera3D
+Node
 MeshInstance3D
 WorldEnvironment
-Node
 DirectionalLight3D
-Camera3D

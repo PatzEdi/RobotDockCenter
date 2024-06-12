@@ -1,3 +1,4 @@
 res://main_scene_3d.tscn
 res://environment.tres
 res://main_camera.gd
+res://robot_camera.gd

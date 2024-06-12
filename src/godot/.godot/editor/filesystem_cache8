@@ -1,10 +1,11 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1718058393
-environment.tres::Environment::7034614787324903742::1717984885::0::1::::<><>::
+::res://::1718140427
+environment.tres::Environment::7034614787324903742::1718128771::0::1::::<><>::
 icon.svg::CompressedTexture2D::8397093227873724557::1717636433::1717636436::1::::<><>::
-main_camera.gd::GDScript::-1::1718044720::0::1::::<>Camera3D<>::
-main_scene_3d.tscn::PackedScene::8207058387079928144::1718058393::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd
-::res://data_images/::1718044783
+main_camera.gd::GDScript::-1::1718129072::0::1::::<>Camera3D<>::
+main_scene_3d.tscn::PackedScene::8207058387079928144::1718140427::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd<>res://robot_camera.gd
+robot_camera.gd::GDScript::-1::1718140407::0::1::::<>Camera3D<>::
+::res://data_images/::1718095941
 image_1.png::CompressedTexture2D::9150091276726705651::1718058394::1718058447::1::::<><>::
 image_2.png::CompressedTexture2D::594484264446600060::1718058394::1718058447::1::::<><>::
 image_3.png::CompressedTexture2D::1230934863528746363::1718058394::1718058447::1::::<><>::
@@ -1805,5 +1806,7 @@ image_1797.png::CompressedTexture2D::7929751282664957918::1718058428::1718058438
 image_1798.png::CompressedTexture2D::7070207956884077953::1718058428::1718058438::1::::<><>::
 image_1799.png::CompressedTexture2D::2814992374707662374::1718058428::1718058438::1::::<><>::
 image_1800.png::CompressedTexture2D::6392142983590126867::1718058428::1718058438::1::::<><>::
-::res://data_text/::1717971371
-image_info_data.txt::TextFile::-1::1717981297::0::1::::<><>::
+::res://data_text/::1718062196
+image_info_data.txt::TextFile::-1::1718058428::0::1::::<><>::
+::res://frames_testing/::1718140410
+frame.png::CompressedTexture2D::5031576657834289416::1718140429::1718140429::1::::<><>::
