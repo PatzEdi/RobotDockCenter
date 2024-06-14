@@ -7,7 +7,8 @@
 
 	"main": [
 		{
-			"data_set_len" : 1200,
+			"data_set_len_row" : 1200,
+			"data_set_len_col" : 5,
             "distance_cline_range" : 4,
 			"distance_rline_range" : ".5-7",
 			"rotation_range" : 30
@@ -17,6 +18,7 @@
 	"config2": [
 		{
 			"data_set_len" : 1200,
+			"data_set_len_col" : 5,
             "distance_cline_range" : 4,
 			"distance_rline_range" : ".5-7",
 			"rotation_range" : 30

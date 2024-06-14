@@ -5,12 +5,16 @@ import sys
 import math
 
 # Let's use sys.path to import the inference script from the machine_learning directory
-dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'machine_learning'))
-sys.path.append(dir_path)
+inference_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'machine_learning'))
+sys.path.append(inference_dir_path)
 import inference
 
-class TestDataProcess(unittest.TestCase):
+config_parser_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(config_parser_dir_path)
+import config_parser
 
+class TestDataProcess(unittest.TestCase):
+    rotation_range = config_parser.get_rotation_range()
     def open_data(self):
         # Define a path to a test CSV file
         test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data.csv')
@@ -27,7 +31,7 @@ class TestDataProcess(unittest.TestCase):
     def test_data_size(self):
         df = self.open_data()
         # Assert that the DataFrame has the correct shape
-        self.assertEqual(df.shape, (1200, 5))
+        self.assertEqual(df.shape, (config_parser.get_data_set_len_row(), config_parser.get_data_set_len_col()))
 
     def test_equal_data_distribution(self):
         df = self.open_data()
@@ -51,12 +55,12 @@ class TestDataProcess(unittest.TestCase):
 
         # Now, we do the same for the rotations:
         rotations_int = [math.floor(rotation) if rotation > 0 else math.ceil(rotation) for rotation in rotations]
-        rotations_dict = {i: rotations_int.count(i) for i in range(-30,31,1)}
+        rotations_dict = {i: rotations_int.count(i) for i in range(-self.rotation_range,self.rotation_range+1,1)}
         # Let's assert that the rotations are distributed well by checking if the amount values in the dict above are all equal:
-        for i in range(-30,31):
+        for i in range(-self.rotation_range,self.rotation_range+1):
             self.assertEqual(rotations_dict[i], rotations_dict[0])
         
-        self.assertEqual(sum(rotations_dict[i] for i in range(-30,31)), df.shape[0]) # Let's make sure the counting was correct
+        self.assertEqual(sum(rotations_dict[i] for i in range(-self.rotation_range,self.rotation_range+1)), df.shape[0]) # Let's make sure the counting was correct
 
         print("\nData is distrubuted well! :)\n")
 class TestModel(unittest.TestCase):
