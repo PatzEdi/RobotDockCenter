@@ -8,7 +8,7 @@ var reverse_line_distance_from_dock = 2 # distance between the reverse line and 
 
 # Let's define some hyperparameters for the image gathering:
 var save_images = false # Determines whether or not to save the images in the current run.
-var num_images_per_class = 300 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
+var num_images_per_class = 400 # To ensure that we have an equal number of images for each class, we will set a fixed amount instead of just using random values for camera movements.
 var num_classes = 4 # There are three classes as of now (a fourth will be added later): center, left, and right
 var num_classes_counter = 0
 
@@ -20,7 +20,7 @@ var global_image_counter = 0
 
 # This below is to determine whether or not the images being gathered will face directly at the reverse line point or not. This will be changed by the code itself using counter variables. Half the images true, half of them false
 var perfectly_centered = true
-
+var direction = 1 # -1 for backwards, 0 for idle (not forward OR backward), 1 for forward. This is in terms of every frame.
 # This below is to save the image lines to then put in a file.
 var image_data_lines = []
 
@@ -50,9 +50,10 @@ func _process(_delta):
 	# We make half of the images facing directly, and half of the images not facing directly.
 	if (global_image_counter >= (num_images_per_class/2)+(num_images_per_class*num_classes_counter)):
 		perfectly_centered = false # We need to fix this next, possibly by updating a counter variable in the if statements, and replacing the num_classes variable here with that counter variable
+		direction = 0
 	else:
 		perfectly_centered = true
-	
+		direction = 1
 	
 	# NOTE: if statements regarding the counter variables are vital here. We can't just add all the image gathering functions here, because otherwise Godot will execute all the function calls PER FRAME, which is not possible and will cause failure.
 	
@@ -61,16 +62,19 @@ func _process(_delta):
 	elif (global_image_counter < num_images_per_class*2):
 		if (num_images_per_class==global_image_counter): # This is to forcefully make the last image of the previous loop perfectly centered.
 			perfectly_centered = true
+			direction = 1
 		num_classes_counter = 1
 		get_left_image() # Get's a single image to the left of the center line.
 	elif (global_image_counter < num_images_per_class*3):
 		if (num_images_per_class*2==global_image_counter):
 			perfectly_centered = true
+			direction = 1
 		num_classes_counter = 2
 		get_right_image() # Get's a single image to the right of the center line.
 	elif (global_image_counter < (num_images_per_class*4)+at_rline_point_extra_image_num):
 		if (num_images_per_class*3==global_image_counter):
 			perfectly_centered = true
+			direction = 1
 		num_classes_counter = 4 # We change this due to the extra images for this class added to make the dataset more equal.
 		get_reverse_line_point_image()
 	# NOTE: To add another class with extra images like the one above:
@@ -107,7 +111,7 @@ func get_center_image():
 	# Save the image and append to the image_data_lines list.
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ".png,center,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,center,"+str(direction)+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
 	
 	self.transform.origin = reverse_line_pos # Then, we move back to the original position, which is the reverse point line.
 
@@ -133,7 +137,7 @@ func get_left_image():
 	# Put your code here to save the image:
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ".png,left,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,left,"+str(direction)+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
 	
 	self.transform.origin = reverse_line_pos # We move the camera back to its original position, which is the reverse point line.
 
@@ -159,7 +163,7 @@ func get_right_image():
 	# Put your code here to save the image:
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter) + ".png,right,1," + str(distance_from_reverse_line) + "," + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,right,"+str(direction)+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
 	
 	self.transform.origin = reverse_line_pos # We move the camera back to its original position
 
@@ -184,7 +188,7 @@ func get_reverse_line_point_image():
 	if (save_images):
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
 		# We apply the distance value even if it isn't zero, so that the model learns that there is some threshold.
-		image_data_lines.append("image_" + str(global_image_counter) + ".png,at_rline,0," + str(distance_from_reverse_line)+ "," + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter) + ".png,at_rline,"+str(direction)+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
 
 	self.transform.origin = reverse_line_pos
 # These images will be images that have surpassed the reverse line point, or that they are too left or right to be considered to be in the reverse line point.

@@ -82,3 +82,4 @@ def shuffle_images():
 #predict_single_image(1)
 #scan_all_images(print_output=True) # This will print out the predicted values for all of the images in the data_images folder, realtime
 #show_images_with_plt()
+#print(predict("/Users/edwardferrari/Documents/GitHub/RobotDockCenter/src/godot/frames_testing/frame.png"))

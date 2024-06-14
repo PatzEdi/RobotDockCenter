@@ -72,7 +72,7 @@ if __name__=="__main__": # This is used to prevent the code below from running w
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
     learning_rate = 0.0005
     batch_size = 8 # Leave at one for stochastic gradient descent
-    num_epochs = 35
+    num_epochs = 40
     
     # [Experimental] determine the importance of each loss value:
     weight_direction = .95

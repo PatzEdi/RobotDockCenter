@@ -7,6 +7,6 @@
 *.png
 *.translation
 *.pth
+*.csv
 
 .vscode
-src/godot/data_text/image_info_data.csv

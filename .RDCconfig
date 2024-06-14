@@ -1,0 +1,25 @@
+{
+	"RDCSettings": [
+		{
+			"mainTemplate" : "main"
+		}
+	],
+
+	"main": [
+		{
+			"data_set_len" : 1200,
+            "distance_cline_range" : 4,
+			"distance_rline_range" : ".5-7",
+			"rotation_range" : 30
+		}
+	],
+	
+	"config2": [
+		{
+			"data_set_len" : 1200,
+            "distance_cline_range" : 4,
+			"distance_rline_range" : ".5-7",
+			"rotation_range" : 30
+		}
+	]
+}
