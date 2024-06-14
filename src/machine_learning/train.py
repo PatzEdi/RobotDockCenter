@@ -52,18 +52,16 @@ class Predictor(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
+        
+        self.combined_output = nn.Linear(32*32*64, 3) # Output size is 3
 
-        self.direction = nn.Linear(32*32*64, 1) # Predict the direction value
-        self.distance_rline = nn.Linear(32*32*64, 1) # Predict the distance value
-        self.rotation_value = nn.Linear(32*32*64, 1) # Predict the rotation value
 
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), -1)
-
-        direction = self.direction(x)
-        distance_rline = self.distance_rline(x)
-        rotation_value = self.rotation_value(x)
+        
+        outputs = self.combined_output(x)
+        direction, distance_rline, rotation_value = outputs.split(1, dim=1)
 
         return [direction, distance_rline, rotation_value]
 
