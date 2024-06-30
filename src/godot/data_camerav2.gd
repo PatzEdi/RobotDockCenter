@@ -63,11 +63,9 @@ func _ready():
 	
 	"""
 	Once we make sure that the camera is ready to move from a perfectly centered position with the Dock, we can move the camera to the starting point of the data gathering process.
-	We don't need to do this initial positioning in the _ready() function besides the x-axis (starting_distance), but rather have it just normally, as it goes by a 0 * step amount and such.
 	"""
-	# The only initial positioning we need to do is the x axis. We add the starting distance on top of the threshold accounted for before.
 	self.transform.origin.x += starting_distance
-	
+	self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
@@ -76,16 +74,20 @@ func _process(delta):
 		var img = get_viewport().get_texture().get_image()
 		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
 		image_data_lines.append("image_" + str(global_image_counter+1) + ".png,center,")#+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
+	
+	
 	# Here we put if statements to check e.g. if we need to go to the next row or something, and then call the functions under where it says "Below we put our functions:":
 	if (rotation_steps_counter == total_rotations_per_step_point-1):
 		# Here, once the last rotation is finished, we reset the rotation counter:
 		rotation_steps_counter = 0
-		z_step() # Then we move left.
-		# And then after this we reset the camera for the next set of rotation images by looking at the rline point, and then turning right/left by the rotation range.
+		z_step() # Then we move left. The z_step() method also includes code to reset the rotation.
 	# If this is the case, we move to the next row:
 	elif (z_steps_counter == total_z_step_points_per_row-1):
 		z_steps_counter = 0
 		x_step()
+	else: # Else, we rotate.
+		rot_step()
+	
 	# If we are done gathering the images, we exit.
 	if (global_image_counter == total_num_images-1):
 		get_tree().quit()
@@ -96,24 +98,25 @@ func _process(delta):
 func z_step():
 	# Here we simple move the camera left by the z-step amount:
 	self.transform.origin.z += z_axis_step_amount
+	# Here we reset the rotation as well, according to the rotation range:
+	self.look_at(rline_pos)
+	self.rotation.y += deg_to_rad(rotation_range)
 	z_steps_counter += 1
 func x_step():
 	# Here we simple move the camera torwards the rline by the x-step amount and reset the distance cline for the z-axis as well.
-	self.transform.origin.x += x_axis_step_amount * x_steps_counter
-	self.transform.origin.z = DockIndicator.transform.origin.z + starting_distance_z
+	self.transform.origin.x -= x_axis_step_amount
+	self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
 	x_steps_counter += 1
 func rot_step():
 	"""
-	We have a bit of a problem:
-		
 		As we move about the zaxis and xaxis, the angles for each step point change.
 		
 		For example, as we move along the z axis to the right, the angle becomes more acute to face toward the reverse line point.
 		
 		To solve this, we can, from any step point, look at the rline point, and add the rotation angle range to it, and then start stepping from there.
 	"""
+	self.rotation.y += deg_to_rad(rotation_step_amount)
 	rotation_steps_counter += 1
-
 
 # This below is to write the data to the file we will use for training:
 func write_lines_to_file():
