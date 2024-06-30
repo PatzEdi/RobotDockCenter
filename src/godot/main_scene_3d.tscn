@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://do6tb11f2ouuy"]
+[gd_scene load_steps=17 format=3 uid="uid://do6tb11f2ouuy"]
 
 [ext_resource type="Environment" uid="uid://c7hvcv57ofo1k" path="res://environment.tres" id="1_b4ds7"]
 [ext_resource type="Script" path="res://main_camera.gd" id="2_7vk5s"]
@@ -13,6 +13,9 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d1bqv"]
 albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yopgw"]
+albedo_color = Color(0.32549, 0.32549, 0.32549, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_j360i"]
 
@@ -75,6 +78,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_d1bqv")
 
 [node name="back" type="MeshInstance3D" parent="meshes/Dock"]
 transform = Transform3D(-2.78387e-08, -0.124661, 6.09699e-16, 0.636876, -5.44912e-09, -6.09699e-16, 2.22134e-16, 4.34803e-17, 1.74806, -13.6144, 0.325651, 0.198133)
+material_override = SubResource("StandardMaterial3D_yopgw")
 mesh = SubResource("BoxMesh_j360i")
 
 [node name="DockIndicator" type="MeshInstance3D" parent="meshes/Dock"]
@@ -149,6 +153,8 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="SubViewport" type="SubViewport" parent="DataCamera/SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
 
 [node name="data_camerav2" type="Camera3D" parent="DataCamera/SubViewportContainer/SubViewport"]
 transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -4.54884, 0.739946, 0.115488)

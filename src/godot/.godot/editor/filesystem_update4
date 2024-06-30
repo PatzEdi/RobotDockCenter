@@ -1,9 +1,3 @@
 res://main_scene_3d.tscn
 res://environment.tres
-res://main_camera.gd
-res://robot_camera.gd
-res://data_text/image_info_data.Type.translation
-res://data_text/image_info_data.Direction.translation
-res://data_text/image_info_data.Distance.translation
-res://data_text/image_info_data.Rotation.translation
 res://data_camerav2.gd

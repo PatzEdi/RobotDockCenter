@@ -1,10 +1,11 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1718218144
-environment.tres::Environment::7034614787324903742::1718211339::0::1::::<><>::
+::res://::1719499380
+data_camerav2.gd::GDScript::-1::1718988854::0::1::::<>Camera3D<>::
+environment.tres::Environment::7034614787324903742::1718900836::0::1::::<><>::
 icon.svg::CompressedTexture2D::8397093227873724557::1717636433::1717636436::1::::<><>::
 main_camera.gd::GDScript::-1::1718215518::0::1::::<>Camera3D<>::
-main_scene_3d.tscn::PackedScene::8207058387079928144::1718218144::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd<>res://robot_camera.gd
-robot_camera.gd::GDScript::-1::1718216398::0::1::::<>Camera3D<>::
+main_scene_3d.tscn::PackedScene::8207058387079928144::1718989081::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd<>res://robot_camera.gd<>res://data_camerav2.gd
+robot_camera.gd::GDScript::-1::1718385251::0::1::::<>Camera3D<>::
 ::res://data_images/::1718213703
 image_1.png::CompressedTexture2D::9150091276726705651::1718213598::1718213691::1::::<><>::
 image_2.png::CompressedTexture2D::594484264446600060::1718213598::1718213691::1::::<><>::
@@ -2406,18 +2407,17 @@ image_2397.png::CompressedTexture2D::8626856114279720436::1718213662::1718213679
 image_2398.png::CompressedTexture2D::7045976592957433454::1718213662::1718213679::1::::<><>::
 image_2399.png::CompressedTexture2D::8732365930317676404::1718213662::1718213679::1::::<><>::
 image_2400.png::CompressedTexture2D::4824808288853306726::1718213662::1718213679::1::::<><>::
-::res://data_text/::1718217484
+::res://data_text/::1718356667
 image_info_data copy.csv::Translation::8016719461066640896::1718216658::1718217484::1::::<><>::
-image_info_data.csv::Translation::3868956010948191065::1718216699::1718217379::1::::<><>::
-image_info_data.Type.translation::OptimizedTranslation::2536738090089162721::1718217379::0::1::::<><>::
-image_info_data.Direction.translation::OptimizedTranslation::6055551108494158154::1718217379::0::1::::<><>::
-image_info_data.Distance.translation::OptimizedTranslation::7772511346551968332::1718217379::0::1::::<><>::
-image_info_data.Rotation.translation::OptimizedTranslation::3446455083985985411::1718217379::0::1::::<><>::
-image_info_data copy.Type.translation::OptimizedTranslation::7670077501177724071::1718217484::0::1::::<><>::
 image_info_data copy.Direction.translation::OptimizedTranslation::454927656069347176::1718217484::0::1::::<><>::
 image_info_data copy.Distance.translation::OptimizedTranslation::2462490871388862456::1718217484::0::1::::<><>::
 image_info_data copy.Rotation.translation::OptimizedTranslation::5033836798536318330::1718217484::0::1::::<><>::
-::res://frames_testing/::1718218145
+image_info_data copy.Type.translation::OptimizedTranslation::7670077501177724071::1718217484::0::1::::<><>::
+image_info_data.csv::Translation::3868956010948191065::1718216699::1718217379::1::::<><>::
+image_info_data.Direction.translation::OptimizedTranslation::6055551108494158154::1718217379::0::1::::<><>::
+image_info_data.Distance.translation::OptimizedTranslation::7772511346551968332::1718217379::0::1::::<><>::
+image_info_data.Rotation.translation::OptimizedTranslation::3446455083985985411::1718217379::0::1::::<><>::
+image_info_data.Type.translation::OptimizedTranslation::2536738090089162721::1718217379::0::1::::<><>::
+::res://frames_testing/::1718218147
 frame.png::CompressedTexture2D::5031576657834289416::1718215497::1718215498::1::::<><>::
-image.jpg::CompressedTexture2D::3902869500908921740::1718218085::1718218085::1::::<><>::
 image.png::CompressedTexture2D::3869895817760553877::1718218146::1718218147::1::::<><>::

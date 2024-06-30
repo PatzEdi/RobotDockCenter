@@ -12,7 +12,7 @@ func _ready():
 	http_request.request_completed.connect(_on_request_completed)
 	self.add_child(http_request)
 	# Let's set a random starting point for the robot:
-	var random_z = randf_range(-2,0)
+	var random_z = randf_range(-2,2)
 #
 #
 #	# We transform both the robot body and the camera:
@@ -63,7 +63,7 @@ func rotate_randomly(degree_range=25):
 # Functions to move the robot:
 func parse_predictions_and_move(direction, distance, rotation_value):
 	await get_tree().process_frame
-	var bot_movement_amount = .2
+	var bot_movement_amount = .5
 	var bot_rotation_amount = .3
 	
 	if (distance < -6 and rotation_value < .3):
