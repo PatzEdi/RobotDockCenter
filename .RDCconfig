@@ -11,7 +11,7 @@
 			"data_set_len_col" : 5,
             "distance_cline_range" : 4,
 			"distance_rline_range" : ".5-7",
-			"rotation_range" : 30
+			"rotation_range" : 25
 		}
 	],
 	

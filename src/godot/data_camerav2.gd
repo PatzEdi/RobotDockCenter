@@ -17,11 +17,11 @@ var z_axis_step_amount = .5
 var rotation_step_amount = 2
 var rotation_range = 25 # Rotation range in degrees (-range, range)
 
-var total_x_step_points = (starting_distance)/x_axis_step_amount
-var total_z_step_points_per_row = starting_distance_z*2/z_axis_step_amount
+var total_x_step_points = ((starting_distance)/x_axis_step_amount) + 1
+var total_z_step_points_per_row = (starting_distance_z*2/z_axis_step_amount) + 1
 var total_step_points = total_x_step_points * total_z_step_points_per_row
 
-var total_rotations_per_step_point = (rotation_range*2)/rotation_step_amount
+var total_rotations_per_step_point = ((rotation_range*2)/rotation_step_amount) + 1
 var total_num_images = total_step_points * total_rotations_per_step_point
 
 """
@@ -41,12 +41,13 @@ var image_data_lines = []
 var global_image_counter = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# First we notify/make it clear if the data will be overwritten/images will be saved
+	image_data_lines.append("Image,RotationValue") # We first append the headers of the csv data file
+	# We notify/make it clear if the data will be overwritten/images will be saved
 	if (save_images):
 		print("Save images is true, images will be saved")
 	else:
 		print("SAVE IMAGES IS FALSE, IMAGES WILL NOT BE SAVED")
-		
+	
 	print("\nZ-Step Points per row: " + str(total_z_step_points_per_row)) # We multiply by two because the total amount of distance for the z goes from 4 to the left, to 4 to the right.
 	print("Total X-Step Points: " + str(total_x_step_points))
 	
@@ -78,37 +79,38 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
-	# Here we put the code to get the image from the veiwport: 
-	if save_images:
-		var img = get_viewport().get_texture().get_image()
-		img.save_png("res://data_images/image_" + str(global_image_counter) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter+1) + ".png,center,")#+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
-	
+
 	# Below we get the rotation values
 	# START DEBUG ROTATIONS
 	var temp_rotation = self.rotation.y
 	self.look_at(rline_pos)
-	print(rad_to_deg(temp_rotation-self.rotation.y))
+	var rotation_value = rad_to_deg(temp_rotation-self.rotation.y)
 	self.rotation.y = temp_rotation
 	# END DEBUG ROTATIONS
 	
-	# Here we put if statements to check e.g. if we need to go to the next row or something, and then call the functions under where it says "Below we put our functions:":
+	# Here we put the code to get the image from the veiwport: 
+	if save_images:
+		var img = get_viewport().get_texture().get_image()
+		img.save_png("res://data_images/image_" + str(global_image_counter+1) + ".png")
+		image_data_lines.append("image_" + str(global_image_counter+1) + ".png,"+str(rotation_value))#+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
+
 	if (rotation_steps_counter == total_rotations_per_step_point-1):
-		# Here, once the last rotation is finished, we reset the rotation counter:
 		rotation_steps_counter = 0
-		z_step() # Then we move left. The z_step() method also includes code to reset the rotation.
-	# If this is the case, we move to the next row:
-	elif (z_steps_counter == total_z_step_points_per_row-1):
+		z_step()
+	else:
+		rot_step()
+	if (z_steps_counter == total_z_step_points_per_row):
 		z_steps_counter = 0
 		x_step()
-	else: # Else, we rotate.
-		rot_step()
-	
+
 	# If we are done gathering the images, we exit.
-	if (global_image_counter == total_num_images-1):
+	if (x_steps_counter == total_x_step_points-1 and z_steps_counter == total_z_step_points_per_row-1):
+		
+		if (save_images):
+			write_lines_to_file()
+			
 		get_tree().quit()
 	
-
 	
 	# We add one to the image counter every frame.
 	global_image_counter += 1

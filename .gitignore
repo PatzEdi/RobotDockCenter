@@ -10,3 +10,5 @@
 *.csv
 
 .vscode
+
+clear_data_images.py
