@@ -33,7 +33,7 @@ var rotation_steps_counter = 0 # This will be reset for each z-step.
 
 
 # boolean value to determine whether or not the camera should save its viewport image to the disk or not.
-var save_images = true
+var save_images = false
 # This is the list to save the lines for the text data:
 var image_data_lines = []
 

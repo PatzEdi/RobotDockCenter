@@ -32,15 +32,9 @@ def predict_with_image_obj(image):
     with train.torch.no_grad():
         outputs = model(image)
     return outputs
-# This is the the function that parses the outputs from the function above and either ceils or floors the direction output, as well as removes the tensor form of each value
+# This function is used to extract the outputs from tensors to a normal list.
 def parse_outputs(outputs):
     predicted_values = [value.item() for value in outputs]
-
-    # Let's floor down the first value to zero if it is less than .5, and ceil it if it is above .5:
-    if (predicted_values[0] < .5):
-        predicted_values[0] = 0
-    elif (predicted_values[0] >= .5):
-        predicted_values[0] = 1
 
     return predicted_values
 

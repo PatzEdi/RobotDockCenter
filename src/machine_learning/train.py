@@ -30,14 +30,13 @@ class TargetsDataset(Dataset):
     def __getitem__(self, idx):
         image = Image.open(self.image_paths[idx])  # Use PIL to open the image
 
-        direction = self.data_targets[idx][0].unsqueeze(0) # Get the direction tensor data sample
-        distance_rline = self.data_targets[idx][1].unsqueeze(0) # Get the distance_rline tensor data sample
-        rotation_value = self.data_targets[idx][2].unsqueeze(0) # Get the rotation_value tensor data sample
+        rotation_value = self.data_targets[idx][0].unsqueeze(0) # Get the rotation_value tensor data sample
+        distance_cline = self.data_targets[idx][1].unsqueeze(0) # Get the distance_cline tensor data sample
 
         if self.transform:
             image = self.transform(image)
 
-        return image, [direction, distance_rline, rotation_value] # Return the image, as well as the target values in a list
+        return image, [rotation_value, distance_cline] # Return the image, as well as the target values in a list
 
 # Define a simple neural network and simple dataset to test the coordinates prediction:
 class Predictor(nn.Module):
@@ -53,7 +52,7 @@ class Predictor(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         
-        self.combined_output = nn.Linear(32*32*64, 3) # Output size is 3
+        self.combined_output = nn.Linear(32*32*64, 2) # Output size is 2
 
 
     def forward(self, x):
@@ -61,49 +60,52 @@ class Predictor(nn.Module):
         x = x.view(x.size(0), -1)
         
         outputs = self.combined_output(x)
-        direction, distance_rline, rotation_value = outputs.split(1, dim=1)
+        rotation_value, distance_cline  = outputs.split(1, dim=1)
 
-        return [direction, distance_rline, rotation_value]
+        return [rotation_value, distance_cline]
 
 # Here is the training part:
 if __name__=="__main__": # This is used to prevent the code below from running when calling this script from another script, specifically the inference.py script.
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
-    learning_rate = 0.0005
-    batch_size = 8 # Leave at one for stochastic gradient descent
-    num_epochs = 40
+    learning_rate = 0.0001
+    batch_size = 16 # Leave at one for stochastic gradient descent
+    num_epochs = 20
     
-    # [Experimental] determine the importance of each loss value:
-    weight_direction = .95
-    weight_distance = .9
-    weight_rotation_value = 1.0
+
+    weight_distance = .85
+    weight_rotation_value = .9
 
     print(f"Learning Rate: {learning_rate}\nBatch Size: {batch_size}\nNum Training Epochs: {num_epochs}")
     print("\nUsing Stochastic Gradient Descent (Batch Size = 1)\n") if batch_size == 1 else print("\nUsing Mini-Batch Gradient Descent\n") # Print out the message that indicates whether or not we are using stochastic gradient descent.
 
     # Let's instantiate the dataset class, as well as the dataloader provided by PyTorch:
     targets_dataset = TargetsDataset(image_paths, data_targets, transform=transform)
-    dataloader = DataLoader(targets_dataset, batch_size=batch_size, shuffle=True) # Batch size can't be greater than 1 because the coordinate lists are of varying sizes. Consider the padding method, and then using RNNs, LSTMs, or GRUs to then ignore the padding.
-
+    dataloader = DataLoader(targets_dataset, batch_size=batch_size, shuffle=True)
     print("Starting training stage...\n")
     # Let's instantiate the model, criterion, and optimizer:
     model = Predictor()
-    criterion = nn.MSELoss()
+    criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate) # We use Adam for adaptive learning rates rather the SGD (To be tested and experimented with in the future...)
     
     loss_values = [] # This list will be used to store the loss values for each epoch.
     # Here is the training loop:
     for epoch in range(num_epochs):
-        for images, targets in dataloader:  # targets is a list: [coords, num_coords, distance]
+        total_loss = 0.0
+        num_batches = 0
+        for images, targets in dataloader:  # targets is a list: [rotation_value, distance_cline]
             optimizer.zero_grad()
-
             outputs = model(images) # Retreive the model's output
-
-            loss = weight_direction * criterion(outputs[0].double(), targets[0]) + weight_distance * criterion(outputs[1].double(), targets[1]) + weight_rotation_value * criterion(outputs[2].double(), targets[2])
+            loss = weight_rotation_value * criterion(outputs[0].double(), targets[0]) + weight_distance * criterion(outputs[1].double(), targets[1])
             loss.backward()
             optimizer.step()
+
+            total_loss += loss.item()
+            num_batches += 1
+
         # Print some info:
-        print(f"Epoch {epoch+1}/{num_epochs}, Loss value: {loss.item()}")
-        loss_values.append(loss.item())
+        average_loss = total_loss / num_batches
+        print(f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}")
+        loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
     model_save_path = os.path.join(current_script_path, '../../models/predictor_model.pth')

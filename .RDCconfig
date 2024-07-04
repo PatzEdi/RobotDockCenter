@@ -7,7 +7,7 @@
 
 	"main": [
 		{
-			"data_set_len_row" : 1326,
+			"data_set_len_row" : 6630,
 			"data_set_len_col" : 3,
             "distance_cline_range" : 4,
 			"distance_rline_range" : 7,
