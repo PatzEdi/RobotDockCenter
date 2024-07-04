@@ -7,7 +7,7 @@ var rline_threshold = .5 # This is the threhold to determine the "thickness" of 
 # Some rline params:
 var distance_rline_dock = 2 # The perpendicular distance from the center of the reverse line and the dock
 # Camera step positioning and movement params:
-var starting_distance = 7 # The starting distance from the rline_pos_w_threshold
+var starting_distance = 2 # The starting distance from the rline_pos_w_threshold
 var starting_distance_z = 4 # The starting distance from the cline every new row.
 
 var x_axis_step_amount = .5
@@ -33,7 +33,7 @@ var rotation_steps_counter = 0 # This will be reset for each z-step.
 
 
 # boolean value to determine whether or not the camera should save its viewport image to the disk or not.
-var save_images = false
+var save_images = true
 # This is the list to save the lines for the text data:
 var image_data_lines = []
 
@@ -102,15 +102,13 @@ func _process(delta):
 	if (z_steps_counter == total_z_step_points_per_row):
 		z_steps_counter = 0
 		x_step()
-
 	# If we are done gathering the images, we exit.
-	if (x_steps_counter == total_x_step_points-1 and z_steps_counter == total_z_step_points_per_row-1):
+	if (x_steps_counter == total_x_step_points):
 		
 		if (save_images):
 			write_lines_to_file()
 			
 		get_tree().quit()
-	
 	
 	# We add one to the image counter every frame.
 	global_image_counter += 1
