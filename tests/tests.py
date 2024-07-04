@@ -36,12 +36,26 @@ class TestDataProcess(unittest.TestCase):
     def test_equal_data_distribution(self):
         df = self.open_data()
 
+        # We check for the rotation values:
         rotations = df['RotationValue'].to_list()
-        # Now, we do the same for the rotations:
-        rotations_int = [round(rotation) for rotation in rotations]
-        rotation_amounts = [rotations_int.count(rotation) for rotation in list(set(rotations_int))]
-        self.assertEqual(len(set(rotation_amounts)), 1)
+
+        self.assertEqual(self.is_equally_distributed(rotations), True)
+
+        distances_cline = df['DistanceCline'].to_list()
+        self.assertEqual(self.is_equally_distributed(distances_cline), True)
+
+        
+
         print("\nData is distrubuted well! :)\n")
+    def is_equally_distributed(self,data):
+        # Step 1: Round values to the nearest 0.5 to standardize them
+        rounded_data = [round(value * 2) / 2 for value in data]
+        
+        # Step 2: Count occurrences of each unique value
+        value_counts = [rounded_data.count(value) for value in set(rounded_data)]
+        
+        # Step 3: Check if all values have the same count
+        return len(set(value_counts)) == 1  # True if all counts are the same, False otherwise
 # class TestModel(unittest.TestCase):
 #     def open_data(self):
 #         # Define a path to a test CSV file

@@ -7,7 +7,7 @@ var rline_threshold = .5 # This is the threhold to determine the "thickness" of 
 # Some rline params:
 var distance_rline_dock = 2 # The perpendicular distance from the center of the reverse line and the dock
 # Camera step positioning and movement params:
-var starting_distance = 2 # The starting distance from the rline_pos_w_threshold
+var starting_distance = 7 # The starting distance from the rline_pos_w_threshold
 var starting_distance_z = 4 # The starting distance from the cline every new row.
 
 var x_axis_step_amount = .5
@@ -41,7 +41,7 @@ var image_data_lines = []
 var global_image_counter = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	image_data_lines.append("Image,RotationValue") # We first append the headers of the csv data file
+	image_data_lines.append("Image,RotationValue,DistanceCline") # We first append the headers of the csv data file
 	# We notify/make it clear if the data will be overwritten/images will be saved
 	if (save_images):
 		print("Save images is true, images will be saved")
@@ -88,11 +88,14 @@ func _process(delta):
 	self.rotation.y = temp_rotation
 	# END DEBUG ROTATIONS
 	
+	# Below we get the distance_cline values:
+	var distance_cline = self.transform.origin.z-DockIndicator.transform.origin.z
+	
 	# Here we put the code to get the image from the veiwport: 
 	if save_images:
 		var img = get_viewport().get_texture().get_image()
 		img.save_png("res://data_images/image_" + str(global_image_counter+1) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter+1) + ".png,"+str(rotation_value))#+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
+		image_data_lines.append("image_" + str(global_image_counter+1) + ".png," + str(rotation_value) + ","+str(distance_cline))#+","+ str(distance_from_reverse_line) + "," + str(rotation_value))
 
 	if (rotation_steps_counter == total_rotations_per_step_point-1):
 		rotation_steps_counter = 0
