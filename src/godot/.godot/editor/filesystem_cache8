@@ -1,12 +1,12 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1720099223
-data_camerav2.gd::GDScript::-1::1720087329::0::1::::<>Camera3D<>::
+::res://::1720479385
+data_camerav2.gd::GDScript::-1::1720169401::0::1::::<>Camera3D<>::
 environment.tres::Environment::7034614787324903742::1720087329::0::1::::<><>::
 icon.svg::CompressedTexture2D::8397093227873724557::1717636433::1717636436::1::::<><>::
 main_camera.gd::GDScript::-1::1718215518::0::1::::<>Camera3D<>::
-main_scene_3d.tscn::PackedScene::8207058387079928144::1720099223::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd<>res://robot_camera.gd<>res://data_camerav2.gd
-robot_camera.gd::GDScript::-1::1718385251::0::1::::<>Camera3D<>::
-::res://data_images/::1720099369
+main_scene_3d.tscn::PackedScene::8207058387079928144::1720169550::0::1::::<><>::uid://c7hvcv57ofo1k::::res://environment.tres<>res://main_camera.gd<>res://robot_camera.gd<>res://data_camerav2.gd
+robot_camera.gd::GDScript::-1::1720103628::0::1::::<>Camera3D<>::
+::res://data_images/::1720099537
 image_1.png::CompressedTexture2D::9174690873806715690::1720099224::1720099487::1::::<><>::
 image_2.png::CompressedTexture2D::7247662283152401855::1720099224::1720099487::1::::<><>::
 image_3.png::CompressedTexture2D::968783250703747505::1720099224::1720099487::1::::<><>::

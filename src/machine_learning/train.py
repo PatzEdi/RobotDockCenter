@@ -8,6 +8,10 @@ from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
+
+# For the progress bar:
+from tqdm import tqdm
+
 # We import the functions and variables from data_process.py used here for training:
 from data_process import get_data_targets
 from data_process import image_paths
@@ -51,14 +55,16 @@ class Predictor(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
-        
-        self.combined_output = nn.Linear(32*32*64, 2) # Output size is 2
+        self.fc1 = nn.Linear(32*32*64, 128)
+        self.combined_output = nn.Linear(128, 2) # Output size is 2
 
 
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), -1)
-        
+
+        x = F.relu(self.fc1(x)) # We use the ReLU activation function for the fully connected layer to introduce nonlinearity, with 128 neurons
+
         outputs = self.combined_output(x)
         rotation_value, distance_cline  = outputs.split(1, dim=1)
 
@@ -67,7 +73,7 @@ class Predictor(nn.Module):
 # Here is the training part:
 if __name__=="__main__": # This is used to prevent the code below from running when calling this script from another script, specifically the inference.py script.
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
-    learning_rate = 0.0001
+    learning_rate = 0.001
     batch_size = 16 # Leave at one for stochastic gradient descent
     num_epochs = 20
     
@@ -87,11 +93,14 @@ if __name__=="__main__": # This is used to prevent the code below from running w
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate) # We use Adam for adaptive learning rates rather the SGD (To be tested and experimented with in the future...)
     
+    model.train()
+
     loss_values = [] # This list will be used to store the loss values for each epoch.
     # Here is the training loop:
     for epoch in range(num_epochs):
         total_loss = 0.0
         num_batches = 0
+        progress_bar = tqdm(dataloader, desc=f"Epoch {epoch+1}/{num_epochs}", ncols=85)
         for images, targets in dataloader:  # targets is a list: [rotation_value, distance_cline]
             optimizer.zero_grad()
             outputs = model(images) # Retreive the model's output
@@ -102,13 +111,16 @@ if __name__=="__main__": # This is used to prevent the code below from running w
             total_loss += loss.item()
             num_batches += 1
 
-        # Print some info:
+            progress_bar.update()
+
+        progress_bar.close()
+        
         average_loss = total_loss / num_batches
-        print(f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}")
+        print(f"\nEpoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}")
         loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(current_script_path, '../../models/predictor_model.pth')
+    model_save_path = os.path.join(current_script_path, '../../models/predictor_model_complex.pth')
     # Save the trained model
     torch.save(model.state_dict(), model_save_path)
 

@@ -7,7 +7,7 @@ from train import image_paths
 from train import data_targets
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
-model_save_path = os.path.join(current_script_path, '../../models/predictor_model.pth')
+model_save_path = os.path.join(current_script_path, '../../models/predictor_model_complex.pth')
 
 model = Predictor()
 
@@ -55,7 +55,15 @@ def scan_all_images(print_output=False):
     total_time = end_time - start_time  # Calculate the elapsed time
     loops_per_second = len(image_paths) / total_time
     print(f"\nInference Speed: {loops_per_second} FPS")
-
+def get_average_accuracy(print_output=False):
+    total_accuracy = 0
+    for i,image_path in enumerate(image_paths):
+        predicted_rotation = parse_outputs(predict(image_path))[0]
+        real_rotation = data_targets[i][0]
+        total_accuracy += abs(real_rotation - predicted_rotation)
+    if print_output:
+        print(f"Average Model Accuracy: {total_accuracy / len(image_paths)}")
+    return total_accuracy / len(image_paths)
 # Let's create a function below that uses matplotlib to display the image and the predicted values, along with the real values.
 def display_image(image_path, real_values, predicted_values):
     image = train.Image.open(image_path)
@@ -74,6 +82,7 @@ def shuffle_images():
     random.shuffle(indices)
     return [image_paths[i] for i in indices], [data_targets[i] for i in indices]
 #predict_single_image(1)
-#scan_all_images(print_output=True) # This will print out the predicted values for all of the images in the data_images folder, realtime
+#scan_all_images(print_output=False) # This will print out the predicted values for all of the images in the data_images folder, realtime
 #show_images_with_plt()
 #print(predict("/Users/edwardferrari/Documents/GitHub/RobotDockCenter/src/godot/frames_testing/frame.png"))
+#get_average_accuracy(print_output=True)
