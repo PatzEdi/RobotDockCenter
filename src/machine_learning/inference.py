@@ -2,6 +2,7 @@ import time
 import train
 from train import Predictor
 from train import os
+from train import tqdm
 # These two below are just used for other purposes in this script. The real inferencing occurs in the predict() method found in here.
 from train import image_paths
 from train import data_targets
@@ -55,15 +56,22 @@ def scan_all_images(print_output=False):
     total_time = end_time - start_time  # Calculate the elapsed time
     loops_per_second = len(image_paths) / total_time
     print(f"\nInference Speed: {loops_per_second} FPS")
-def get_average_accuracy(print_output=False):
+def get_average_accuracy(print_output=False, max_accuracy=30):
     total_accuracy = 0
-    for i,image_path in enumerate(image_paths):
+    counter = 0
+    for i,image_path in enumerate(tqdm(image_paths,desc="Processing images.")):
         predicted_rotation = parse_outputs(predict(image_path))[0]
         real_rotation = data_targets[i][0]
-        total_accuracy += abs(real_rotation - predicted_rotation)
+        accuracy = abs(real_rotation - predicted_rotation)
+
+        if accuracy < max_accuracy:
+            total_accuracy += accuracy
+            counter += 1
+        
     if print_output:
         print(f"Average Model Accuracy: {total_accuracy / len(image_paths)}")
-    return total_accuracy / len(image_paths)
+        print("\nImages Processed: ", counter)
+    return total_accuracy / counter
 # Let's create a function below that uses matplotlib to display the image and the predicted values, along with the real values.
 def display_image(image_path, real_values, predicted_values):
     image = train.Image.open(image_path)
