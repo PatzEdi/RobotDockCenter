@@ -117,11 +117,11 @@ if __name__=="__main__": # This is used to prevent the code below from running w
         progress_bar.close()
         
         average_loss = total_loss / num_batches
-        print(f"\nEpoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}")
+        print(f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}\n")
         loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(current_script_path, '../../../models/predictor_model_complex.pth')
+    model_save_path = os.path.join(current_script_path, '../../../models/model1.pth')
     # Save the trained model
     torch.save(model.state_dict(), model_save_path)
 

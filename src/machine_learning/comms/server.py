@@ -4,7 +4,7 @@ import io
 import base64
 # Let's use sys.path to import the inference script from the machine_learning directory
 import sys
-sys.path.append('src/machine_learning')
+sys.path.append('src/machine_learning/model1')
 import inference  # Your inference script
 
 app = Flask(__name__)
