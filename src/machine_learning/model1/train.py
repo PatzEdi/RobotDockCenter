@@ -8,12 +8,13 @@ from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
-
+import sys
 # For the progress bar:
 from tqdm import tqdm
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # Add the parent directory to the path so that we can import the data_process.py file
 # We import the functions and variables from data_process.py used here for training:
-from data_process import get_data_targets
+from data_process import get_data_targets_model1 as get_data_targets
 from data_process import image_paths
 
 data_targets = get_data_targets(torch,True)
@@ -120,7 +121,7 @@ if __name__=="__main__": # This is used to prevent the code below from running w
         loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(current_script_path, '../../models/predictor_model_complex.pth')
+    model_save_path = os.path.join(current_script_path, '../../../models/predictor_model_complex.pth')
     # Save the trained model
     torch.save(model.state_dict(), model_save_path)
 

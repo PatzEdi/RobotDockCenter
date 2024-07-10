@@ -8,7 +8,7 @@ from train import image_paths
 from train import data_targets
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
-model_save_path = os.path.join(current_script_path, '../../models/predictor_model_complex.pth')
+model_save_path = os.path.join(current_script_path, '../../../models/predictor_model_complex.pth')
 
 model = Predictor()
 

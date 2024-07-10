@@ -23,16 +23,19 @@ print("Amount of images: " + str(df.shape[0]))
 
 image_paths = [os.path.join(data_images_path, image_name) for image_name in df['Image'].to_list()]
 
+# Here we load in all of the data tables from the polars data frame: 
 distances_cline = df['DistanceCline'].to_list()
 rotation_values = df['RotationValue'].to_list()
 
-data_targets = []
 
-# Let's get the data target values in a list of lists, with each inner list containing the values of the target values for each image. The 'Type' column we can skip, so we start at everything after that.
-for i in range(df.shape[0]):
-    data_targets.append([rotation_values[i],distances_cline[i]])
 # This function will be called in train.py to get the data and targets for training the model. We pass down the torch library as a parameter in order to avoid having to import torch twice.
-def get_data_targets(torch,convert_targets_to_tensor=False):
+def get_data_targets_model1(torch,convert_targets_to_tensor=False):
+    data_targets = []
+
+    # Let's get the data target values in a list of lists, with each inner list containing the values of the target values for each image. The 'Type' column we can skip, so we start at everything after that.
+    for i in range(df.shape[0]):
+        data_targets.append([rotation_values[i],distances_cline[i]])
+    # We convert the data_targets to tensors if the parameter is set to True:
     if (convert_targets_to_tensor):
         for i in range(len(data_targets)):
             for i2 in range(len(data_targets[i])):
