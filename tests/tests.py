@@ -13,11 +13,13 @@ config_parser_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.append(config_parser_dir_path)
 import config_parser
 
+model = 1
+
 class TestDataProcess(unittest.TestCase):
     rotation_range = config_parser.get_rotation_range()
     def open_data(self):
         # Define a path to a test CSV file
-        test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data.csv')
+        test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data_model' + str(model) + '.csv')
 
         # Read the CSV file using the function you're testing
         return pl.read_csv(test_csv_path, infer_schema_length=10000)
