@@ -1,3 +1,4 @@
+print("Importing libraries...")
 # Let's import the necessay libraries for image processing and model training. Use pytorch:
 import torch
 import torch.optim as optim
@@ -13,11 +14,15 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # Add the parent directory to the path so that we can import the data_process.py file
-# We import the functions and variables from data_process.py used here for training:
-from data_process import get_data_targets_model1 as get_data_targets
-from data_process import image_paths
 
-data_targets = get_data_targets(torch,True)
+# We import the functions and variables from data_process.py used here for training:
+from data_process import get_data_targets
+
+model_num = 2
+
+print("Training Model Number " + str(model_num))
+
+data_targets, image_paths = get_data_targets(torch, model_num, True)
 
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
@@ -76,7 +81,7 @@ if __name__=="__main__": # This is used to prevent the code below from running w
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
     learning_rate = 0.001
     batch_size = 16 # Leave at one for stochastic gradient descent
-    num_epochs = 20
+    num_epochs = 18
     
 
     weight_distance = .85
@@ -121,7 +126,7 @@ if __name__=="__main__": # This is used to prevent the code below from running w
         loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(current_script_path, '../../../models/model1.pth')
+    model_save_path = os.path.join(current_script_path, '../../../models/model' + str(model_num) + '.pth')
     # Save the trained model
     torch.save(model.state_dict(), model_save_path)
 

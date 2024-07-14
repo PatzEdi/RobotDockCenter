@@ -6,9 +6,10 @@ from train import tqdm
 # These two below are just used for other purposes in this script. The real inferencing occurs in the predict() method found in here.
 from train import image_paths
 from train import data_targets
+from train import model_num
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
-model_save_path = os.path.join(current_script_path, '../../../models/model1.pth')
+model_save_path = os.path.join(current_script_path, '../../../models/model' + str(model_num) + '.pth')
 
 model = Predictor()
 
