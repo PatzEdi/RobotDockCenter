@@ -6,17 +6,20 @@ from train import tqdm
 # These two below are just used for other purposes in this script. The real inferencing occurs in the predict() method found in here.
 from train import image_paths
 from train import data_targets
-from train import model_num
+
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
-model_save_path = os.path.join(current_script_path, '../../../models/model' + str(model_num) + '.pth')
+
 
 model = Predictor()
 
-model.eval() # Set the model to evaluation mode
 
-model.load_state_dict(train.torch.load(model_save_path))
+def load_model(model_num):
+    print("\nLoading model number " + str(model_num) + "...")
+    model_save_path = os.path.join(current_script_path, '../../../models/model' + str(model_num) + '.pth')
 
+    model.load_state_dict(train.torch.load(model_save_path))
+    model.eval() # Set the model to evaluation mode
 # Let's create a function that will take in an image and return the predicted values:
 def predict(image_path):
     # First, we need to preprocess the image:
@@ -90,8 +93,11 @@ def shuffle_images():
     indices = list(range(len(image_paths)))
     random.shuffle(indices)
     return [image_paths[i] for i in indices], [data_targets[i] for i in indices]
-#predict_single_image(1)
-#scan_all_images(print_output=False) # This will print out the predicted values for all of the images in the data_images folder, realtime
-#show_images_with_plt()
-#print(predict("/Users/edwardferrari/Documents/GitHub/RobotDockCenter/src/godot/frames_testing/frame.png"))
-#get_average_accuracy(print_output=True)
+
+if __name__ == "__main__":
+    load_model(1)
+    #predict_single_image(1)
+    #scan_all_images(print_output=False) # This will print out the predicted values for all of the images in the data_images folder, realtime
+    #show_images_with_plt()
+    #print(predict("/Users/edwardferrari/Documents/GitHub/RobotDockCenter/src/godot/frames_testing/frame.png"))
+    #get_average_accuracy(print_output=True)

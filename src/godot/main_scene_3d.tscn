@@ -102,7 +102,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_stp60")
 
 [node name="body" type="MeshInstance3D" parent="meshes/robot"]
 transform = Transform3D(-4.37114e-08, 1.39166e-16, 0.943, 3.48786e-16, 0.399, -3.28906e-16, -1, 1.39166e-16, -4.12198e-08, -8.1912, 0.10709, 0.138237)
-visible = false
 material_override = SubResource("StandardMaterial3D_by1lx")
 mesh = SubResource("CylinderMesh_pakii")
 
@@ -127,22 +126,20 @@ fov = 64.4793
 script = ExtResource("2_7vk5s")
 
 [node name="view_camera" type="Camera3D" parent="."]
-transform = Transform3D(-0.00684252, -0.144109, 0.989538, -0.00353026, 0.989559, 0.144087, -0.99997, -0.00250741, -0.00727981, -6.2854, 1.79125, 0.230464)
+transform = Transform3D(-0.00684252, -0.99993, -0.00968412, -0.00353026, -0.00966013, 0.999947, -0.99997, 0.00687635, -0.00346391, -11.3703, 5.20538, 0.253205)
 current = true
 
 [node name="Robot" type="Node" parent="."]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Robot"]
-visible = false
 offset_right = 512.0
 offset_bottom = 512.0
 
 [node name="SubViewport" type="SubViewport" parent="Robot/SubViewportContainer"]
 handle_input_locally = false
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="robot_camera" type="Camera3D" parent="Robot/SubViewportContainer/SubViewport"]
-process_mode = 4
 transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -8.822, 0.5, 0.138)
 visible = false
 fov = 51.8
@@ -151,14 +148,16 @@ script = ExtResource("3_uu8b2")
 [node name="DataCamera" type="Node" parent="."]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="DataCamera"]
+visible = false
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="SubViewport" type="SubViewport" parent="DataCamera/SubViewportContainer"]
 handle_input_locally = false
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="data_camerav2" type="Camera3D" parent="DataCamera/SubViewportContainer/SubViewport"]
+process_mode = 4
 transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -4.54884, 0.739946, 0.115488)
 fov = 51.8
 script = ExtResource("4_0g3v1")
