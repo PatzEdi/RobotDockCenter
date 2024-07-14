@@ -20,7 +20,7 @@ from data_process import get_data_targets
 
 model_num = 2
 
-print("Training Model Number " + str(model_num))
+print("\nTraining Model Number " + str(model_num))
 
 data_targets, image_paths = get_data_targets(torch, model_num, True)
 
@@ -48,7 +48,7 @@ class TargetsDataset(Dataset):
 
         return image, [rotation_value, distance_cline] # Return the image, as well as the target values in a list
 
-# Define a simple neural network and simple dataset to test the coordinates prediction:
+# Define a simple neural network
 class Predictor(nn.Module):
     def __init__(self):
         super(Predictor, self).__init__()
@@ -79,9 +79,9 @@ class Predictor(nn.Module):
 # Here is the training part:
 if __name__=="__main__": # This is used to prevent the code below from running when calling this script from another script, specifically the inference.py script.
     """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
-    learning_rate = 0.001
+    learning_rate = 0.0005
     batch_size = 16 # Leave at one for stochastic gradient descent
-    num_epochs = 18
+    num_epochs = 15
     
 
     weight_distance = .85

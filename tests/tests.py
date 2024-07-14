@@ -3,7 +3,7 @@ import polars as pl
 import os
 import sys
 import math
-
+from hashlib import md5
 # Let's use sys.path to import the inference script from the machine_learning directory
 # inference_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'machine_learning'))
 # sys.path.append(inference_dir_path)
@@ -58,6 +58,34 @@ class TestDataProcess(unittest.TestCase):
         
         # Step 3: Check if all values have the same count
         return len(set(value_counts)) == 1  # True if all counts are the same, False otherwise
+    # This test makes sure that all of the images in the data are different, and does so by  computing the hashes of each image.
+    def test_all_images_different(self):
+        df = self.open_data()
+        image_paths_model1 = [os.path.join(os.path.dirname(__file__), '../src/godot/data_images', image_name) for image_name in df['Image'].to_list()]
+        image_paths_model2 = [os.path.join(os.path.dirname(__file__), '../src/godot/data_images2', image_name) for image_name in df['Image'].to_list()]
+        # We will store the hashes of the images in a set to check for duplicates
+        image_hashes_model1 = set()
+        for image_path in image_paths_model1:
+            image_hash = self.get_image_hash(image_path)
+            image_hashes_model1.add(image_hash)
+        self.assertEqual(len(image_hashes_model1), len(image_paths_model1))
+
+        image_hashes_model2 = set()
+        for image_path in image_paths_model2:
+            image_hash = self.get_image_hash(image_path)
+            image_hashes_model2.add(image_hash)
+        self.assertEqual(len(image_hashes_model2), len(image_paths_model2))
+        
+
+    def get_image_hash(self,image_path):
+        # Open the image in binary mode
+        with open(image_path, 'rb') as image_file:
+            # Read the contents of the file
+            image_data = image_file.read()
+            # Use hashlib to compute the MD5 hash of the image data
+            hash_md5 = md5(image_data)
+            # Return the hexadecimal representation of the digest
+            return hash_md5.hexdigest()
 # class TestModel(unittest.TestCase):
 #     def open_data(self):
 #         # Define a path to a test CSV file
