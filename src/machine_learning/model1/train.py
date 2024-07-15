@@ -14,11 +14,13 @@ import sys
 from tqdm import tqdm
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # Add the parent directory to the path so that we can import the data_process.py file
-
 # We import the functions and variables from data_process.py used here for training:
 from data_process import get_data_targets
 
-model_num = 2
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../..')) 
+import config_parser
+
+model_num = int(config_parser.get_model_num())
 
 print("\nTraining Model Number " + str(model_num))
 

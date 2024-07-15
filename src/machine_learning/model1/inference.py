@@ -6,13 +6,11 @@ from train import tqdm
 # These two below are just used for other purposes in this script. The real inferencing occurs in the predict() method found in here.
 from train import image_paths
 from train import data_targets
-
+from train import model_num
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
 
-
 model = Predictor()
-
 
 def load_model(model_num):
     print("\nLoading model number " + str(model_num) + "...")
@@ -95,7 +93,7 @@ def shuffle_images():
     return [image_paths[i] for i in indices], [data_targets[i] for i in indices]
 
 if __name__ == "__main__":
-    load_model(1)
+    load_model(model_num)
     #predict_single_image(1)
     #scan_all_images(print_output=False) # This will print out the predicted values for all of the images in the data_images folder, realtime
     #show_images_with_plt()

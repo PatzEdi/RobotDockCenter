@@ -14,6 +14,9 @@ def get_selected_template():
 def get_main_template_data():
     return load_config()[get_selected_template()][0]
 
+def get_model_num():
+    return get_main_template_data()['model_num']
+
 def get_data_set_len_row():
     return get_main_template_data()['data_set_len_row']
 
