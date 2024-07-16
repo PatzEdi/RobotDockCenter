@@ -16,7 +16,9 @@ import config_parser
 model = 1
 
 class TestDataProcess(unittest.TestCase):
+
     rotation_range = config_parser.get_rotation_range()
+
     def open_data(self):
         # Define a path to a test CSV file
         test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data_model' + str(model) + '.csv')
@@ -49,6 +51,7 @@ class TestDataProcess(unittest.TestCase):
         
 
         print("\nData is distrubuted well! :)\n")
+
     def is_equally_distributed(self,data):
         # Step 1: Round values to the nearest 0.5 to standardize them
         rounded_data = [round(value * 2) / 2 for value in data]
@@ -76,7 +79,6 @@ class TestDataProcess(unittest.TestCase):
             image_hashes_model2.add(image_hash)
         self.assertEqual(len(image_hashes_model2), len(image_paths_model2))
         
-
     def get_image_hash(self,image_path):
         # Open the image in binary mode
         with open(image_path, 'rb') as image_file:
@@ -86,25 +88,6 @@ class TestDataProcess(unittest.TestCase):
             hash_md5 = md5(image_data)
             # Return the hexadecimal representation of the digest
             return hash_md5.hexdigest()
-# class TestModel(unittest.TestCase):
-#     def open_data(self):
-#         # Define a path to a test CSV file
-#         test_csv_path = os.path.join(os.path.dirname(__file__), '../src/godot/data_text/image_info_data.csv')
 
-#         # Read the CSV file using the function you're testing
-#         return pl.read_csv(test_csv_path, infer_schema_length=10000)
-#     def test_model_performance(self):
-#         image_paths, targets = inference.shuffle_images() # These are always random, so we can just pick the first image and its targets. It will be different every time.
-#         image_outputs = inference.parse_outputs(inference.predict(image_paths[0]))
-#         image_targets = inference.parse_outputs(targets[0])
-#         print("\nModel is being tested on: " + os.path.basename(image_paths[0]) + "\n")
-#         # Direction:
-#         self.assertEqual(image_outputs[0], image_targets[0])
-#         # Distance_rline:
-#         self.assertAlmostEqual(image_outputs[1], image_targets[1], delta=1)
-#         # Rotation_value:
-#         self.assertAlmostEqual(image_outputs[2], image_targets[2], delta=1.5)
-
-#         print("Model is performing well!")
 if __name__ == '__main__':
     unittest.main()
