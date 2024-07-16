@@ -92,7 +92,7 @@ func _ready():
 	self.rotation.y += deg_to_rad(rotation_range)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
 
 	# Below we get the rotation values

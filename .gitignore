@@ -14,3 +14,8 @@
 clear_data_images.py
 
 *filesystem_cache8
+
+
+# We don't need the generatable .cfg files from godot, except for the project_metadata.cfg
+src/godot/.godot/editor/*.cfg
+!src/godot/.godot/editor/project_metadata.cfg
