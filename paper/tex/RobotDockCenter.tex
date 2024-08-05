@@ -18,8 +18,8 @@
 % Set document margins
 \geometry{margin=1in}
 
-% Set line spacing
-\doublespacing
+% % Set line spacing
+% \doublespacing
 
 % Format section headings
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
@@ -28,21 +28,27 @@
 \begin{document}
 
 % Title and author information
-\title{RobotDockCenter}
-\author{Author Name}
+\title{\textbf{RobotDockCenter: A Novel and Supervised Learning Approach to Robot Docking Using Monocular Vision}}
+\author{\textbf{Edward Ferrari}}
 \date{\today}
 
 \maketitle
 
 \begin{abstract}
 % Abstract of your paper
+Robot docking is a critical task in autonomous systems. 
+It allows a robotic entity to continue its designated workflow without the need for human intervention. 
+Autonomous docking solutions have typically been centered on using and combining various sensors including LIDAR scanners and ultrasonic sensors, and even combining such sensors with cameras \citep{app131910675}. 
+In the world of robotics, reinforcement learning has recently played a major role in further developing autonomy. 
+In this paper, we propose an alternative approach to robot docking using monocular vision without the need of additional sensors or reinforcement learning. 
+We use basic deep learning techniques to predict the next action based on a single input frame containing the target docking station.
+Our approach is supervised and does not require any form of reward function or policy optimization.
 \end{abstract}
 
 \section{Introduction}
-According to \citet{author2020}, robot docking is a critical task in autonomous systems. Recent studies \citep{author2019, author2021} have shown significant improvements in docking accuracy using monocular vision.
 
 \section{Related Work}
-The work of \citet{author2018} provides a comprehensive review of existing docking methods.
+The work of \citet{app131910675} provides a comprehensive review of existing docking methods.
 
 \section{Methodology}
 % Description of your proposed methodology or approach
