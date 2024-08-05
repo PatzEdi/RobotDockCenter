@@ -14,6 +14,5 @@
 *filesystem_cache8
 
 
-# We don't need the generatable .cfg files from godot, except for the project_metadata.cfg
-src/godot/.godot/editor/*.cfg
-!src/godot/.godot/editor/project_metadata.cfg
+# We don't need the generatable files from godot:
+src/godot/.godot/
