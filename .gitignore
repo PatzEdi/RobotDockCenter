@@ -11,8 +11,12 @@
 
 .vscode
 
-*filesystem_cache8
-
-
 # We don't need the generatable files from godot:
 src/godot/.godot/
+
+# We also only want to include important tex files for the paper:
+paper/tex/*
+!paper/tex/*.tex
+!paper/tex/*.bib
+!paper/tex/*.cls
+!paper/tex/*.pdf

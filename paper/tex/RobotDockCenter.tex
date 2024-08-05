@@ -1,0 +1,63 @@
+\documentclass{article}
+
+% Packages for formatting
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+
+% Packages for figures and tables
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+
+% Packages for citations and references
+\usepackage{natbib}
+\usepackage{hyperref}
+
+% Set document margins
+\geometry{margin=1in}
+
+% Set line spacing
+\doublespacing
+
+% Format section headings
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% Title and author information
+\title{RobotDockCenter}
+\author{Author Name}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+% Abstract of your paper
+\end{abstract}
+
+\section{Introduction}
+According to \citet{author2020}, robot docking is a critical task in autonomous systems. Recent studies \citep{author2019, author2021} have shown significant improvements in docking accuracy using monocular vision.
+
+\section{Related Work}
+The work of \citet{author2018} provides a comprehensive review of existing docking methods.
+
+\section{Methodology}
+% Description of your proposed methodology or approach
+
+\section{Experimental Results}
+% Presentation and analysis of your experimental results
+
+\section{Discussion}
+% Discussion of your findings and their implications
+
+\section{Conclusion}
+% Summary of your work and future directions
+
+% References
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
