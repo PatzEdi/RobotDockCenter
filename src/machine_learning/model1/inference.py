@@ -58,22 +58,34 @@ def scan_all_images(print_output=False):
     total_time = end_time - start_time  # Calculate the elapsed time
     loops_per_second = len(image_paths) / total_time
     print(f"\nInference Speed: {loops_per_second} FPS")
-def get_average_accuracy(print_output=False, max_accuracy=30):
-    total_accuracy = 0
+def get_average_accuracy(print_output=False, max_rot_accuracy=30):
+    total_rotation_accuracy = 0
+    total_distance_accuracy = 0
     counter = 0
     for i,image_path in enumerate(tqdm(image_paths,desc="Processing images.")):
-        predicted_rotation = parse_outputs(predict(image_path))[0]
-        real_rotation = data_targets[i][0]
-        accuracy = abs(real_rotation - predicted_rotation)
+        preds = parse_outputs(predict(image_path))
+        predicted_rotation = preds[0]
+        predicted_distance = preds[1]
 
-        if accuracy < max_accuracy:
-            total_accuracy += accuracy
+        # We get the accuracy for the rotation value:
+        real_rotation = data_targets[i][0]
+        rotation_accuracy = abs(real_rotation - predicted_rotation)
+
+        # We get the accuracy for the distance value:
+        real_distance = data_targets[i][1]
+        distance_accuracy = abs(real_distance - predicted_distance)
+
+        if rotation_accuracy < max_rot_accuracy:
+            total_rotation_accuracy += rotation_accuracy
             counter += 1
-        
+
+        total_distance_accuracy += distance_accuracy
+
     if print_output:
-        print(f"Average Model Accuracy: {total_accuracy / len(image_paths)}")
-        print("\nImages Processed: ", counter)
-    return total_accuracy / counter
+        print(f"Average Model Accuracy: Deg: {total_rotation_accuracy / counter}, Distance: {total_distance_accuracy / len(image_paths)}")
+        print("\nImages Processed (rotation wise): ", counter)
+
+    return total_rotation_accuracy / counter, total_distance_accuracy / len(image_paths)
 # Let's create a function below that uses matplotlib to display the image and the predicted values, along with the real values.
 def display_image(image_path, real_values, predicted_values):
     image = train.Image.open(image_path)
