@@ -1,10 +1,8 @@
-print("Importing libraries...")
-# Let's import the necessay libraries for image processing and model training. Use pytorch:
 import torch
 import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import transforms, datasets
+from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -13,11 +11,12 @@ import sys
 # For the progress bar:
 from tqdm import tqdm
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..')) # Add the parent directory to the path so that we can import the data_process.py file
-# We import the functions and variables from data_process.py used here for training:
+# Add parent directory to the path so that data_process.py can be imported
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# Import the functions and variables from data_process.py used for training
 from data_process import get_data_targets
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../..')) 
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 import config_parser
 
 model_num = int(config_parser.get_model_num())
@@ -35,20 +34,21 @@ transform = transforms.Compose([
 class TargetsDataset(Dataset):
     def __init__(self, image_paths, data_targets, transform=None):
         self.image_paths = image_paths
-        self.data_targets = data_targets # The full list of lists that contains the target values for each image
+        # The full list of lists that contains the target values for each image
+        self.data_targets = data_targets
         self.transform = transform
     def __len__(self):
-        return len(self.image_paths) # Return the amount of images in the data set, thus the amount of samples to train/iterate over
+        return len(self.image_paths) # Return amount of images in the data set
     def __getitem__(self, idx):
         image = Image.open(self.image_paths[idx])  # Use PIL to open the image
 
-        rotation_value = self.data_targets[idx][0].unsqueeze(0) # Get the rotation_value tensor data sample
-        distance_cline = self.data_targets[idx][1].unsqueeze(0) # Get the distance_cline tensor data sample
+        rotation_value = self.data_targets[idx][0].unsqueeze(0)
+        distance_cline = self.data_targets[idx][1].unsqueeze(0)
 
         if self.transform:
             image = self.transform(image)
 
-        return image, [rotation_value, distance_cline] # Return the image, as well as the target values in a list
+        return image, [rotation_value, distance_cline] # Return image w/targets
 
 # Define a simple neural network
 class Predictor(nn.Module):
@@ -56,7 +56,9 @@ class Predictor(nn.Module):
         super(Predictor, self).__init__()
 
         self.features = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=3, padding=1), # The initial parameter 3 is used to define the number of channels (in this case three, because of (R,G,B))
+            # The initial parameter 3 is used to define the number of channels
+            # (in this case three, because of (R,G,B))
+            nn.Conv2d(3, 32, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
@@ -71,7 +73,9 @@ class Predictor(nn.Module):
         x = self.features(x)
         x = x.view(x.size(0), -1)
 
-        x = F.relu(self.fc1(x)) # We use the ReLU activation function for the fully connected layer to introduce nonlinearity, with 128 neurons
+        # We use the ReLU activation function for the fully
+        #connected layer to introduce nonlinearity, with 128 neurons
+        x = F.relu(self.fc1(x))
 
         outputs = self.combined_output(x)
         rotation_value, distance_cline  = outputs.split(1, dim=1)
@@ -79,12 +83,18 @@ class Predictor(nn.Module):
         return [rotation_value, distance_cline]
 
 # Here is the training part:
-if __name__=="__main__": # This is used to prevent the code below from running when calling this script from another script, specifically the inference.py script.
-    """Let's create some hyperparameters and instantiate the dataset, dataloader, model, criterion, and optimizer, and then finally, the training loop"""
+# This is used to prevent the code below from running when calling this script
+# from another script, specifically the inference.py script.
+if __name__=="__main__":
+    """Let's create some hyperparameters and instantiate components. 
+
+    Components include the dataset, dataloader, model, criterion, and optimizer, and
+    then finally, the training loop
+    """
     learning_rate = 0.0005
     batch_size = 16 # Leave at one for stochastic gradient descent
     num_epochs = 15
-    
+
 
     weight_distance = .85
     weight_rotation_value = .9
@@ -92,24 +102,39 @@ if __name__=="__main__": # This is used to prevent the code below from running w
     print(f"Learning Rate: {learning_rate}\nBatch Size: {batch_size}\nNum Training Epochs: {num_epochs}")
     print("\nUsing Stochastic Gradient Descent (Batch Size = 1)\n") if batch_size == 1 else print("\nUsing Mini-Batch Gradient Descent\n") # Print out the message that indicates whether or not we are using stochastic gradient descent.
 
-    # Let's instantiate the dataset class, as well as the dataloader provided by PyTorch:
-    targets_dataset = TargetsDataset(image_paths, data_targets, transform=transform)
-    dataloader = DataLoader(targets_dataset, batch_size=batch_size, shuffle=True)
+    # Let's instantiate the dataset class and the Pytorch Dataloader:
+    targets_dataset = TargetsDataset(
+        image_paths,
+        data_targets,
+        transform=transform
+    )
+    dataloader = DataLoader(
+        targets_dataset,
+        batch_size=batch_size,
+        shuffle=True
+    )
     print("Starting training stage...\n")
     # Let's instantiate the model, criterion, and optimizer:
     model = Predictor()
     criterion = nn.L1Loss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate) # We use Adam for adaptive learning rates rather the SGD (To be tested and experimented with in the future...)
-    
-    model.train()
+    # We use Adam for adaptive learning rates rather the SGD (To be tested and
+    # experimented with in the future...)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    loss_values = [] # This list will be used to store the loss values for each epoch.
+    model.train()
+    # This list will be used to store the loss values for each epoch.
+    loss_values = []
     # Here is the training loop:
     for epoch in range(num_epochs):
         total_loss = 0.0
         num_batches = 0
-        progress_bar = tqdm(dataloader, desc=f"Epoch {epoch+1}/{num_epochs}", ncols=85)
-        for images, targets in dataloader:  # targets is a list: [rotation_value, distance_cline]
+        progress_bar = tqdm(
+            dataloader,
+            desc=f"Epoch {epoch+1}/{num_epochs}",
+            ncols=85
+        )
+        # targets is a list: [rotation_value, distance_cline]
+        for images, targets in dataloader:
             optimizer.zero_grad()
             outputs = model(images) # Retreive the model's output
             loss = weight_rotation_value * criterion(outputs[0].double(), targets[0]) + weight_distance * criterion(outputs[1].double(), targets[1])
@@ -122,13 +147,19 @@ if __name__=="__main__": # This is used to prevent the code below from running w
             progress_bar.update()
 
         progress_bar.close()
-        
+
         average_loss = total_loss / num_batches
-        print(f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}\n")
+        print(
+            f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}"
+            "\n"
+        )
         loss_values.append(average_loss)
 
     current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(current_script_path, '../../../models/model' + str(model_num) + '.pth')
+    model_save_path = os.path.join(
+        current_script_path,
+        "../../../models/model" + str(model_num) + ".pth"
+    )
     # Save the trained model
     torch.save(model.state_dict(), model_save_path)
 
