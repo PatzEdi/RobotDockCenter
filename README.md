@@ -3,6 +3,9 @@
 
 This project utilizes the Godot game engine in order to retrieve image data. It aims to automate the docking of robots into their charging stations.
 
+## **Current Godot Engine Version Used:**
+**4.3**
+
 **Docking Demo (7-14-24)**
 
 [DockingDemo](https://github.com/user-attachments/assets/17d77959-a484-4489-93ab-d440e66e084c)

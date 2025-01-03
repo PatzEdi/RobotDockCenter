@@ -41,10 +41,12 @@ def parse_outputs(outputs):
 
     return predicted_values
 
-def predict_single_image(image_number):
+def predict_single_image(image_number, return_time=False):
+    time_start = time.time()
     predicted = predict(image_paths[image_number-1])
     print(predicted)
     print(parse_outputs(predicted))
+    return time.time() - time_start if return_time else None
 # Lets create a few functions:
 def scan_all_images(print_output=False):
     start_time = time.time()
@@ -106,7 +108,7 @@ def shuffle_images():
 
 if __name__ == "__main__":
     load_model(model_num)
-    #predict_single_image(1)
+    print(predict_single_image(50,return_time=True))
     #scan_all_images(print_output=False) # This will print out the predicted values for all of the images in the data_images folder, realtime
     #show_images_with_plt()
     #print(predict("/Users/edwardferrari/Documents/GitHub/RobotDockCenter/src/godot/frames_testing/frame.png"))

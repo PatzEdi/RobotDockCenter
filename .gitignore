@@ -20,3 +20,6 @@ paper/tex/*
 !paper/tex/*.bib
 !paper/tex/*.cls
 !paper/tex/*.pdf
+
+# For the linter we are using:
+ruff.toml
