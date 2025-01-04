@@ -45,6 +45,8 @@ var image_data_lines = []
 
 # image counter for the image names:
 var global_image_counter = 0
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	image_data_lines.append("Image,RotationValue,DistanceCline") # We first append the headers of the csv data file

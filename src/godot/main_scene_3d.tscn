@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://do6tb11f2ouuy"]
+[gd_scene load_steps=18 format=3 uid="uid://do6tb11f2ouuy"]
 
 [ext_resource type="Environment" uid="uid://c7hvcv57ofo1k" path="res://environment.tres" id="1_b4ds7"]
 [ext_resource type="Script" path="res://main_camera.gd" id="2_7vk5s"]
@@ -24,6 +24,9 @@ albedo_color = Color(0.32549, 0.32549, 0.32549, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xw1n"]
 diffuse_mode = 2
 albedo_color = Color(1, 0, 0.0941176, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ntba1"]
+albedo_color = Color(0, 0.74902, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gujig"]
 diffuse_mode = 2
@@ -85,6 +88,11 @@ mesh = SubResource("BoxMesh_j360i")
 transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.414758, 0.188346)
 mesh = SubResource("CylinderMesh_2nmys")
 surface_material_override/0 = SubResource("StandardMaterial3D_0xw1n")
+
+[node name="RlineIndicator" type="MeshInstance3D" parent="meshes/Dock"]
+transform = Transform3D(0.2, 0, 3.01992e-08, 0, -0.05, 0, -3.01992e-08, 0, 0.2, -11.043, 0.00784385, 0.188)
+mesh = SubResource("CylinderMesh_2nmys")
+surface_material_override/0 = SubResource("StandardMaterial3D_ntba1")
 
 [node name="ChargePort1" type="MeshInstance3D" parent="meshes/Dock"]
 transform = Transform3D(-8.74228e-09, -0.001, -3.01992e-08, -0.2, 4.37114e-11, 6.97574e-17, -1.25029e-15, -1.50996e-10, 0.2, -13.5432, 0.292232, 0.821855)
