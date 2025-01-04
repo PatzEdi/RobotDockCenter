@@ -49,122 +49,122 @@ var global_image_counter = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	image_data_lines.append("Image,RotationValue,DistanceCline") # We first append the headers of the csv data file
-	# We notify/make it clear if the data will be overwritten/images will be saved
-	if (save_images):
-		print("Save images is true, images will be saved")
-	else:
-		print("SAVE IMAGES IS FALSE, IMAGES WILL NOT BE SAVED")
-	
-	print("\nZ-Step Points per row: " + str(total_z_step_points_per_row)) # We multiply by two because the total amount of distance for the z goes from 4 to the left, to 4 to the right.
-	print("Total X-Step Points: " + str(total_x_step_points))
-	
-	print("Total rotation step points: " + str(total_rotations_per_step_point))
-	var calculation_string = str(total_z_step_points_per_row) + "*" + str(total_x_step_points) + "*" + str(total_rotations_per_step_point)
-	
-	# Then, we print out the total number of images that we will have:
-	print("\nTotal number of images: " + calculation_string + " = " + str(total_num_images) + "\n")
-	
-	# Let's set the correct origin values for the rline, so that we can come back to it for reference if needed later on.
-	rline_pos = DockIndicator.transform.origin
-	rline_pos.x += distance_rline_dock
-	
-	rline_pos_w_threshold = rline_pos
-	rline_pos_w_threshold.x += rline_threshold # We add the threshold num as that is the farthest 'upper' threshold that defines the area defined by the rline. We also add it here so that it is already accounted for.
-	# Let's move our camera to where the the very end threshold of the rline is, for proper positioning.
-	self.transform.origin = rline_pos_w_threshold
-	
-	# Here we decide what to change based on the model selected, which includes the images path to save the images for the specific model chosen, and the target to look at
-	if (model == 1):
-		print("Model 1 is chosen, images will be focalized on rline_pos\n")
-		target = rline_pos
-	else:
-		print("Model 2 is chosen, images will be focalized on DockIndicator\n")
-		target = DockIndicator.transform.origin
-		data_images_folder += str(2)
-		
-	"""
-	Once we make sure that the camera is ready to move from a perfectly centered position with the Dock, we can move the camera to the starting point of the data gathering process.
-	"""
-	self.transform.origin.x += starting_distance
-	self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
-	# Here we also need to center and rotate in terms of rotation like in the z_step and x_step functions
-	self.look_at(target)
-	# Here we turn.
-	self.rotation.y += deg_to_rad(rotation_range)
+    image_data_lines.append("Image,RotationValue,DistanceCline") # We first append the headers of the csv data file
+    # We notify/make it clear if the data will be overwritten/images will be saved
+    if (save_images):
+        print("Save images is true, images will be saved")
+    else:
+        print("SAVE IMAGES IS FALSE, IMAGES WILL NOT BE SAVED")
+    
+    print("\nZ-Step Points per row: " + str(total_z_step_points_per_row)) # We multiply by two because the total amount of distance for the z goes from 4 to the left, to 4 to the right.
+    print("Total X-Step Points: " + str(total_x_step_points))
+    
+    print("Total rotation step points: " + str(total_rotations_per_step_point))
+    var calculation_string = str(total_z_step_points_per_row) + "*" + str(total_x_step_points) + "*" + str(total_rotations_per_step_point)
+    
+    # Then, we print out the total number of images that we will have:
+    print("\nTotal number of images: " + calculation_string + " = " + str(total_num_images) + "\n")
+    
+    # Let's set the correct origin values for the rline, so that we can come back to it for reference if needed later on.
+    rline_pos = DockIndicator.transform.origin
+    rline_pos.x += distance_rline_dock
+    
+    rline_pos_w_threshold = rline_pos
+    rline_pos_w_threshold.x += rline_threshold # We add the threshold num as that is the farthest 'upper' threshold that defines the area defined by the rline. We also add it here so that it is already accounted for.
+    # Let's move our camera to where the the very end threshold of the rline is, for proper positioning.
+    self.transform.origin = rline_pos_w_threshold
+    
+    # Here we decide what to change based on the model selected, which includes the images path to save the images for the specific model chosen, and the target to look at
+    if (model == 1):
+        print("Model 1 is chosen, images will be focalized on rline_pos\n")
+        target = rline_pos
+    else:
+        print("Model 2 is chosen, images will be focalized on DockIndicator\n")
+        target = DockIndicator.transform.origin
+        data_images_folder += str(2)
+        
+    """
+    Once we make sure that the camera is ready to move from a perfectly centered position with the Dock, we can move the camera to the starting point of the data gathering process.
+    """
+    self.transform.origin.x += starting_distance
+    self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
+    # Here we also need to center and rotate in terms of rotation like in the z_step and x_step functions
+    self.look_at(target)
+    # Here we turn.
+    self.rotation.y += deg_to_rad(rotation_range)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
+    await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
 
-	# Below we get the rotation values
-	# START DEBUG ROTATIONS
-	var temp_rotation = self.rotation.y
-	self.look_at(target)
-	var rotation_value = rad_to_deg(temp_rotation-self.rotation.y)
-	self.rotation.y = temp_rotation
-	# END DEBUG ROTATIONS
-	
-	# Below we get the distance_cline values:
-	var distance_cline = self.transform.origin.z-DockIndicator.transform.origin.z
-	
-	# Here we put the code to get the image from the viewport: 
-	if save_images:
-		var img = get_viewport().get_texture().get_image()
-		img.save_png("res://" + data_images_folder + "/image_" + str(global_image_counter+1) + ".png")
-		image_data_lines.append("image_" + str(global_image_counter+1) + ".png," + str(rotation_value) + ","+str(distance_cline))
+    # Below we get the rotation values
+    # START DEBUG ROTATIONS
+    var temp_rotation = self.rotation.y
+    self.look_at(target)
+    var rotation_value = rad_to_deg(temp_rotation-self.rotation.y)
+    self.rotation.y = temp_rotation
+    # END DEBUG ROTATIONS
+    
+    # Below we get the distance_cline values:
+    var distance_cline = self.transform.origin.z-DockIndicator.transform.origin.z
+    
+    # Here we put the code to get the image from the viewport: 
+    if save_images:
+        var img = get_viewport().get_texture().get_image()
+        img.save_png("res://" + data_images_folder + "/image_" + str(global_image_counter+1) + ".png")
+        image_data_lines.append("image_" + str(global_image_counter+1) + ".png," + str(rotation_value) + ","+str(distance_cline))
 
-	if (rotation_steps_counter == total_rotations_per_step_point-1):
-		rotation_steps_counter = 0
-		z_step()
-	else:
-		rot_step()
-	if (z_steps_counter == total_z_step_points_per_row):
-		z_steps_counter = 0
-		x_step()
-	# If we are done gathering the images, we exit.
-	if (x_steps_counter == total_x_step_points):
-		
-		if (save_images):
-			write_lines_to_file()
-			
-		get_tree().quit()
-	
-	# We add one to the image counter every frame.
-	global_image_counter += 1
-	
+    if (rotation_steps_counter == total_rotations_per_step_point-1):
+        rotation_steps_counter = 0
+        z_step()
+    else:
+        rot_step()
+    if (z_steps_counter == total_z_step_points_per_row):
+        z_steps_counter = 0
+        x_step()
+    # If we are done gathering the images, we exit.
+    if (x_steps_counter == total_x_step_points):
+        
+        if (save_images):
+            write_lines_to_file()
+            
+        get_tree().quit()
+    
+    # We add one to the image counter every frame.
+    global_image_counter += 1
+    
 # Below we put our functions:
 func z_step():
-	# Here we simple move the camera left by the z-step amount:
-	self.transform.origin.z += z_axis_step_amount
-	# Here we reset the rotation as well, according to the rotation range:
-	self.look_at(target)
-	self.rotation.y += deg_to_rad(rotation_range)
-	z_steps_counter += 1
+    # Here we simple move the camera left by the z-step amount:
+    self.transform.origin.z += z_axis_step_amount
+    # Here we reset the rotation as well, according to the rotation range:
+    self.look_at(target)
+    self.rotation.y += deg_to_rad(rotation_range)
+    z_steps_counter += 1
 func x_step():
-	# Here we simple move the camera torwards the rline by the x-step amount and reset the distance cline for the z-axis as well.
-	self.transform.origin.x -= x_axis_step_amount
-	self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
-	# For each x_step we do, we do what the z_step() method does as well, which is center the camera and rotate based on the range.
-	self.look_at(target)
-	# Here we turn.
-	self.rotation.y += deg_to_rad(rotation_range)
-	x_steps_counter += 1
+    # Here we simple move the camera torwards the rline by the x-step amount and reset the distance cline for the z-axis as well.
+    self.transform.origin.x -= x_axis_step_amount
+    self.transform.origin.z = DockIndicator.transform.origin.z - starting_distance_z
+    # For each x_step we do, we do what the z_step() method does as well, which is center the camera and rotate based on the range.
+    self.look_at(target)
+    # Here we turn.
+    self.rotation.y += deg_to_rad(rotation_range)
+    x_steps_counter += 1
 func rot_step():
-	"""
-		As we move about the zaxis and xaxis, the angles for each step point change.
-		
-		For example, as we move along the z axis to the right, the angle becomes more acute to face toward the reverse line point.
-		
-		To solve this, we can, from any step point, look at the rline point, and add the rotation angle range to it, and then start stepping from there.
-	"""
-	self.rotation.y -= deg_to_rad(rotation_step_amount)
-	
-	rotation_steps_counter += 1
+    """
+        As we move about the zaxis and xaxis, the angles for each step point change.
+        
+        For example, as we move along the z axis to the right, the angle becomes more acute to face toward the reverse line point.
+        
+        To solve this, we can, from any step point, look at the rline point, and add the rotation angle range to it, and then start stepping from there.
+    """
+    self.rotation.y -= deg_to_rad(rotation_step_amount)
+    
+    rotation_steps_counter += 1
 
 # This below is to write the data to the file we will use for training:
 func write_lines_to_file():
-	var file = FileAccess.open("res://data_text/" + data_csv_file_name + ".csv", FileAccess.WRITE)
-	for element in image_data_lines:
-		file.store_line(element)
-	file.close()
+    var file = FileAccess.open("res://data_text/" + data_csv_file_name + ".csv", FileAccess.WRITE)
+    for element in image_data_lines:
+        file.store_line(element)
+    file.close()

@@ -8,6 +8,9 @@ extends Camera3D
     # Model 2 is focused around the DockIndicator, which we consider to be target 2.
     # Unlike the datacamerav2 and the preceding versions of the in game camera, we don't need to save labels in a file directly from godot. That comes later using opencv in this synthetic version of the docking data gathering process.
     # However, we still need the images to be saved in separate folders for each model. This is because not all images will have both the DockIndicator and the RlineIndicator in the same image. (IMPORTANT)
+    # NOTE: When switching camera in the Godot editor, make sure to select 'current' in the camera properties for the one you want to switch to. This is because the camera that is 'current' is the one that will be used to render the viewport image.
+    # Another thing that differs from datacamera_v2 is that the RlineIndicator mesh needs to be moved down. This is the reason why we don't use the RlineIndicator as the target for model 1, but rather the rline_pos variable. This is because otherwise, we look down instead of straight ahead.
+    # One more thing: When processing the images with opencv later, make sure that for each model we are getting the labels for, the target is in the image. We can simply do this by checking if opencv returns anything for the target. If it doesn't, we can simply discard/skip the image.
 
 var rline_pos # This position represents the very center of the rline.
 var rline_pos_w_threshold # This is used to store the rline position with the threshold below.
@@ -15,7 +18,7 @@ var rline_threshold = .5 # This is the threshold to determine the "thickness" of
 # Some rline params:
 var distance_rline_dock = 2 # The perpendicular distance from the center of the reverse line and the dock. This is used to position the RlineIndicator mesh.
 # Camera step positioning and movement params:
-var starting_distance = 7 # The starting distance from the rline_pos_w_threshold
+var starting_distance = 5 # The starting distance from the rline_pos_w_threshold
 var starting_distance_z = 4 # The starting distance from the cline every new row.
 
 var x_axis_step_amount = .5
@@ -75,6 +78,9 @@ func _ready():
     rline_pos.x += distance_rline_dock 
     # Here we want to set the RlineIndicator mesh to the correct position, which is the center of the rline.
     RlineIndicator.transform.origin = rline_pos
+    # Important thing to do here is move the mesh downward a fixed amount, so that it isn't floating. This is also why we don't use the RlineIndicator as the target for model 1.
+    RlineIndicator.transform.origin.y -= (DockIndicator.transform.origin.y-.05)
+    
     
     rline_pos_w_threshold = rline_pos
     rline_pos_w_threshold.x += rline_threshold # We add the threshold num as that is the farthest 'upper' threshold that defines the area defined by the rline. We also add it here so that it is already accounted for.
@@ -84,7 +90,7 @@ func _ready():
     # Here we decide what to change based on the model selected, which includes the images path to save the images for the specific model chosen, and the target to look at
     if (model == 1):
         print("Model 1 is chosen, images will be focalized on RlineIndicator\n")
-        target = RlineIndicator.transform.origin
+        target = rline_pos # We don't make it the RlineIndicator because we want to look straight ahead, not down.
     else:
         print("Model 2 is chosen, images will be focalized on DockIndicator\n")
         target = DockIndicator.transform.origin
@@ -104,23 +110,26 @@ func _ready():
 func _process(_delta):
     await get_tree().process_frame # Let's wait for the frame to process before gathering the image.
 
-	# Here we get the image from the viewport: 
+    # Here we get the image from the viewport: 
     if save_images:
         var img = get_viewport().get_texture().get_image()
         img.save_png("res://" + data_images_folder + "/image_" + str(global_image_counter+1) + ".png")
-	
-	# Z step
+    
+    # Z step
     if (rotation_steps_counter == total_rotations_per_step_point-1):
         rotation_steps_counter = 0
         z_step()
     else:
         rot_step()
+
     # X step
     if (z_steps_counter == total_z_step_points_per_row):
         z_steps_counter = 0
         x_step()
+
     # If we are done gathering the images, we exit.
     if (x_steps_counter == total_x_step_points):
+        print("\nFinished gathering data, quitting...")
         get_tree().quit()
 
     # We add one to the image counter every frame.

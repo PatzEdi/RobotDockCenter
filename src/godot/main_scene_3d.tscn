@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://do6tb11f2ouuy"]
+[gd_scene load_steps=19 format=3 uid="uid://do6tb11f2ouuy"]
 
 [ext_resource type="Environment" uid="uid://c7hvcv57ofo1k" path="res://environment.tres" id="1_b4ds7"]
 [ext_resource type="Script" path="res://main_camera.gd" id="2_7vk5s"]
 [ext_resource type="Script" path="res://robot_camera.gd" id="3_uu8b2"]
 [ext_resource type="Script" path="res://data_camerav2.gd" id="4_0g3v1"]
+[ext_resource type="Script" path="res://data_camerav3.gd" id="4_pffj5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_mb5nr"]
 
@@ -75,7 +76,7 @@ mesh = SubResource("BoxMesh_wdltp")
 [node name="Dock" type="Node" parent="meshes"]
 
 [node name="base" type="MeshInstance3D" parent="meshes/Dock"]
-transform = Transform3D(1, 0, 0, 0, 0.137319, 0, 0, 0, 2.39471, -13.5316, 0.0628397, 0.210237)
+transform = Transform3D(1, 0, 0, 0, 0.137319, 0, 0, 0, 2.39471, -13.9734, 0.0628397, 0.210237)
 mesh = SubResource("BoxMesh_frurv")
 surface_material_override/0 = SubResource("StandardMaterial3D_d1bqv")
 
@@ -167,6 +168,14 @@ handle_input_locally = false
 render_target_update_mode = 4
 
 [node name="data_camerav2" type="Camera3D" parent="DataCamera/SubViewportContainer/SubViewport"]
+process_mode = 4
 transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-16, -1, 3.48787e-16, -4.37114e-08, -4.54884, 0.739946, 0.115488)
+visible = false
 fov = 51.8
 script = ExtResource("4_0g3v1")
+
+[node name="data_camerav3" type="Camera3D" parent="DataCamera/SubViewportContainer/SubViewport"]
+transform = Transform3D(0.0817471, 0, 0.996653, 0, 1, 0, -0.996653, 0, 0.0817471, 0, 0.986318, 0)
+current = true
+fov = 51.8
+script = ExtResource("4_pffj5")
