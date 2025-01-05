@@ -12,6 +12,13 @@ extends Camera3D
     # Another thing that differs from datacamera_v2 is that the RlineIndicator mesh needs to be moved down. This is the reason why we don't use the RlineIndicator as the target for model 1, but rather the rline_pos variable. This is because otherwise, we look down instead of straight ahead.
     # One more thing: When processing the images with opencv later, make sure that for each model we are getting the labels for, the target is in the image. We can simply do this by checking if opencv returns anything for the target. If it doesn't, we can simply discard/skip the image.
 
+# TODO List for today:
+# 1. Get the data from Godot
+# 2. Get the labels using OpenCV
+# 3. Train one of the models using the data and labels
+
+
+
 var rline_pos # This position represents the very center of the rline.
 var rline_pos_w_threshold # This is used to store the rline position with the threshold below.
 var rline_threshold = .5 # This is the threshold to determine the "thickness" of the rline up/down. Multiply this value by two to get the total "thickness".
@@ -42,11 +49,12 @@ var z_steps_counter = 0 # This will be reset every time the camera has reached t
 var x_steps_counter = 0 # This will not be reset but rather added onto each time the end of a row is reached.
 var rotation_steps_counter = 0 # This will be reset for each z-step.
 
+# I still need to decide whether or not two folders are indeed necessary for each model, since before it was.
 var model = 1 # select either 1 or 2 to determine whether or not images & their rotation values will be focused on the rline_pos (model1) or the DockIndicator itself (model2)
 var target # This will either by rline_pos or DockIndicator.transform.origin, based on the model selected above (1 or 2).
 
 # boolean value to determine whether or not the camera should save its viewport image to the disk or not.
-var save_images = false
+var save_images = false 
 # Used to determine the name of the text file to use depending on the model chosen above
 # This below is used to determine where to save the images, based on the model chosen.
 var data_images_folder = "data_images"
