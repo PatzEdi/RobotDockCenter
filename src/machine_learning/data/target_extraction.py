@@ -73,12 +73,16 @@ def get_images_for_each_target(data_dir):
         if image.endswith(".png"):
             image_path = os.path.join(data_dir, image)
             green_points, red_points = get_contour_points(image_path)
+
             if len(green_points) > 0:
-                green_images.append((image_path, green_points))
+                x_avg_green, y_avg_green = get_target_point(green_points)
+                green_images.append((image_path, (x_avg_green, y_avg_green)))
             # We don't do elif here because an image can have both green and
             # red targets
             if len(red_points) > 0:
-                red_images.append((image_path, red_points))
+                x_avg_red, y_avg_red = get_target_point(red_points)
+                red_images.append((image_path, (x_avg_red, y_avg_red)))
+
     return green_images, red_images
 
 data_dir = os.path.join(current_script_path, "../../godot/data_images")
@@ -97,14 +101,14 @@ print(f"Num red images: {len(red_image_data)}")
 
 def plot_image_with_points(image_data):
     image_path = image_data[0]
-    target_coordinates = image_data[1]
-    print(target_coordinates)
-
+    # So connecting to that comment above, here we
+    # will get the average x and y instead of the target coordinates.
+    x_avg, y_avg = image_data[1]
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     plt.imshow(image)
-    # Get the x_avg and y_avg for the first target
-    x_avg, y_avg = get_target_point(target_coordinates)
+    print(x_avg)
+    print(y_avg)
     # Plot the points on the image
     plt.scatter(x_avg, y_avg, color="red")
     plt.show()
@@ -120,4 +124,4 @@ def iterate_through_images(image_data):
 
 test = True
 if test:
-    iterate_through_images(red_image_data)
+    iterate_through_images(green_image_data)

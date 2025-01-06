@@ -13,8 +13,8 @@ extends Camera3D
     # One more thing: When processing the images with opencv later, make sure that for each model we are getting the labels for, the target is in the image. We can simply do this by checking if opencv returns anything for the target. If it doesn't, we can simply discard/skip the image.
 
 # TODO List for today:
-# 1. Get the data from Godot
-# 2. Get the labels using OpenCV
+# 1. Get the data from Godot (DONE)
+# 2. Get the labels using OpenCV (DONE)
 # 3. Train one of the models using the data and labels
 
 
