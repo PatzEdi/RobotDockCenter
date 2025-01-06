@@ -11,20 +11,25 @@ import sys
 # For the progress bar:
 from tqdm import tqdm
 
-# Add parent directory to the path so that data_process.py can be imported
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-# Import the functions and variables from data_process.py used for training
-from data_process import get_data_targets
+# ====================
+# NOTE: This file is currently undergoing heavy refactoring.
+# Also, this  is largely for the synthetic world, alhtough for the real world
+# the implementation will be similar.
+# ====================
+current_script_path = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(current_script_path, "../../godot/data_images")
 
+# Custom modules
+sys.path.append(os.path.join(os.path.dirname(__file__), "../data"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
+
 import config_parser
+from target_extraction import get_images_for_each_target
 
-model_num = int(config_parser.get_model_num())
 
-print("\nTraining Model Number " + str(model_num))
-
-data_targets, image_paths = get_data_targets(torch, model_num, True)
-
+# Resize each image to 128x128 pixels.
+# This is mostly just to improve performance rather than
+# ensure equal image sizes, as each image is already 512x512.
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
     transforms.ToTensor()
@@ -32,23 +37,30 @@ transform = transforms.Compose([
 
 # The custom dataset class used later in the Dataloader:
 class TargetsDataset(Dataset):
-    def __init__(self, image_paths, data_targets, transform=None):
-        self.image_paths = image_paths
-        # The full list of lists that contains the target values for each image
-        self.data_targets = data_targets
+    def __init__(self, target_image_data, transform=None):
+        self.target_image_data = target_image_data
         self.transform = transform
-    def __len__(self):
-        return len(self.image_paths) # Return amount of images in the data set
-    def __getitem__(self, idx):
-        image = Image.open(self.image_paths[idx])  # Use PIL to open the image
 
-        rotation_value = self.data_targets[idx][0].unsqueeze(0)
-        distance_cline = self.data_targets[idx][1].unsqueeze(0)
+    def __len__(self):
+        # Return amount of images in the data set
+        return len(self.target_image_data)
+
+    def __getitem__(self, idx):
+        image = Image.open(self.target_image_data[idx][0])
+
+        # idx is the image index
+        # 1 is the index of the tuple of targets
+        # 0 or 1 for the final indexing is for the target value, either
+        # x_avg or y_avg (the coords of the target point)
+        x_coord = self.target_image_data[idx][1][0]
+        y_coord = self.target_image_data[idx][1][1]
+
+        targets = torch.tensor([x_coord, y_coord], dtype=torch.float32)
 
         if self.transform:
             image = self.transform(image)
 
-        return image, [rotation_value, distance_cline] # Return image w/targets
+        return image, targets # Return image w/targets
 
 # Define a simple neural network
 class Predictor(nn.Module):
@@ -66,104 +78,142 @@ class Predictor(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         self.fc1 = nn.Linear(32*32*64, 128)
-        self.combined_output = nn.Linear(128, 2) # Output size is 2
+        # Out output will be of size [N, 1, 2], where N is the batch size,
+        # and each batch has a list of two values that correspond to the
+        # x_avd and y_avg values of ground truth labels.
+        self.fc2 = nn.Linear(128, 2)
 
 
     def forward(self, x):
-        x = self.features(x)
+        x = self.features(x) # get output of the convolutional layers
+        # Flatten the output of the convolutional
+        # layers
         x = x.view(x.size(0), -1)
 
         # We use the ReLU activation function for the fully
         #connected layer to introduce nonlinearity, with 128 neurons
-        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc1(x)) # Relu to hidden layer
 
-        outputs = self.combined_output(x)
-        rotation_value, distance_cline  = outputs.split(1, dim=1)
 
-        return [rotation_value, distance_cline]
+        return self.fc2(x) # Return the output of the fully connected layer
+
+class Train:
+    # Let's add a train function here to train the model for organization
+    @staticmethod
+    def train(target_image_data, n_epochs, lr, batch_size):
+
+        # Print some general information about the training process
+        print(
+            f"Learning Rate: {lr}\n"
+            f"Batch Size: {batch_size}\n"
+            f"Num Training Epochs: {n_epochs}"
+        )
+
+        # Let's instantiate the dataset class and the Pytorch Dataloader:
+        targets_dataset = TargetsDataset(
+            target_image_data,
+            transform=transform
+        )
+
+        dataloader = DataLoader(
+            targets_dataset,
+            batch_size=batch_size,
+            shuffle=True
+        )
+
+        print("Starting training stage...\n")
+        # Let's instantiate the model, criterion, and optimizer:
+        model = Predictor()
+        criterion = nn.MSELoss()
+        # We use Adam for adaptive learning rates rather the SGD (To be tested
+        # and experimented with in the future...)
+
+        # Use Adam for adaptive learning rates to avoid vanishing gradients
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+        model.train()
+        # This list will be used to store the loss values for each epoch.
+        loss_values = []
+        # Here is the training loop:
+        for epoch in range(num_epochs):
+            total_loss = 0.0
+            progress_bar = tqdm(
+                dataloader,
+                desc=f"Epoch {epoch+1}/{num_epochs}",
+                ncols=85
+            )
+            # targets is a list: [x_coord, y_coord]
+            for image, targets in dataloader:
+                # Zero the gradients (to avoid accumulation, as Pytorch)
+                optimizer.zero_grad()
+                outputs = model(image) # Retreive the model's output
+                loss = criterion(outputs, targets) # Here we calculate the loss
+                loss.backward()
+                optimizer.step()
+
+                total_loss += loss.item()
+
+                progress_bar.update()
+
+            progress_bar.close()
+
+            average_loss = total_loss / len(dataloader)
+            print(
+                f"Epoch {epoch+1}/{num_epochs},"
+                f"Average Loss value: {average_loss}\n"
+            )
+            # We append to the list for later plotting
+            loss_values.append(average_loss)
+
+        model_save_path = os.path.join(
+            current_script_path,
+            "../../../models/model" + str(model_num) + ".pth"
+        )
+        # Save the trained model
+        torch.save(model.state_dict(), model_save_path)
+
+        print("\nTraining finished & model has been saved!")
+
+        return loss_values
+
 
 # Here is the training part:
 # This is used to prevent the code below from running when calling this script
 # from another script, specifically the inference.py script.
 if __name__=="__main__":
-    """Let's create some hyperparameters and instantiate components. 
 
-    Components include the dataset, dataloader, model, criterion, and optimizer, and
-    then finally, the training loop
+    # We get the data
+    print("Getting & preprocessing data...")
+    # Target 1 is for the green target, and target 2 is for the red target
+    # TODO: We need to change this so that only one target data is loaded,
+    # so that time and memory is saved.
+    target_1_data, target_2_data = get_images_for_each_target(data_dir)
+
+    model_num = int(config_parser.get_model_num())
+
+    print("\nTraining Model Number " + str(model_num))
+    # Set the data var based on the model we are training
+    target_image_data = target_1_data
+    if model_num != 1:
+        target_image_data = target_2_data
+
+    """Let's create some hyperparameters and instantiate components.
+
+    Components include the dataset, dataloader, model, criterion, and optimizer
+    , and then finally, the training loop
     """
     learning_rate = 0.0005
-    batch_size = 16 # Leave at one for stochastic gradient descent
+    batch_size = 8 # Leave at one for stochastic gradient descent
     num_epochs = 15
 
-
-    weight_distance = .85
-    weight_rotation_value = .9
-
-    print(f"Learning Rate: {learning_rate}\nBatch Size: {batch_size}\nNum Training Epochs: {num_epochs}")
-    print("\nUsing Stochastic Gradient Descent (Batch Size = 1)\n") if batch_size == 1 else print("\nUsing Mini-Batch Gradient Descent\n") # Print out the message that indicates whether or not we are using stochastic gradient descent.
-
-    # Let's instantiate the dataset class and the Pytorch Dataloader:
-    targets_dataset = TargetsDataset(
-        image_paths,
-        data_targets,
-        transform=transform
+    # We train the model and get the loss values in doing so
+    loss_values = Train.train(
+        target_image_data,
+        num_epochs,
+        learning_rate,
+        batch_size,
     )
-    dataloader = DataLoader(
-        targets_dataset,
-        batch_size=batch_size,
-        shuffle=True
-    )
-    print("Starting training stage...\n")
-    # Let's instantiate the model, criterion, and optimizer:
-    model = Predictor()
-    criterion = nn.L1Loss()
-    # We use Adam for adaptive learning rates rather the SGD (To be tested and
-    # experimented with in the future...)
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    model.train()
-    # This list will be used to store the loss values for each epoch.
-    loss_values = []
-    # Here is the training loop:
-    for epoch in range(num_epochs):
-        total_loss = 0.0
-        num_batches = 0
-        progress_bar = tqdm(
-            dataloader,
-            desc=f"Epoch {epoch+1}/{num_epochs}",
-            ncols=85
-        )
-        # targets is a list: [rotation_value, distance_cline]
-        for images, targets in dataloader:
-            optimizer.zero_grad()
-            outputs = model(images) # Retreive the model's output
-            loss = weight_rotation_value * criterion(outputs[0].double(), targets[0]) + weight_distance * criterion(outputs[1].double(), targets[1])
-            loss.backward()
-            optimizer.step()
-
-            total_loss += loss.item()
-            num_batches += 1
-
-            progress_bar.update()
-
-        progress_bar.close()
-
-        average_loss = total_loss / num_batches
-        print(
-            f"Epoch {epoch+1}/{num_epochs}, Average Loss value: {average_loss}"
-            "\n"
-        )
-        loss_values.append(average_loss)
-
-    current_script_path = os.path.dirname(os.path.abspath(__file__))
-    model_save_path = os.path.join(
-        current_script_path,
-        "../../../models/model" + str(model_num) + ".pth"
-    )
-    # Save the trained model
-    torch.save(model.state_dict(), model_save_path)
-
-    print("\nTraining finished!")
     # Let's graph the loss values with plt:
     plt.plot(loss_values)
     plt.title("Loss Values Over Time")

@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import torch
 import matplotlib.pyplot as plt
 # NOTE:
     # This script is used for the synthetic world. For the real world images,
@@ -85,18 +86,6 @@ def get_images_for_each_target(data_dir):
 
     return green_images, red_images
 
-data_dir = os.path.join(current_script_path, "../../godot/data_images")
-test_image_path = os.path.join(data_dir,"image_999.png")
-
-
-green_image_data, red_image_data = get_images_for_each_target(data_dir)
-print(f"Num green images: {len(green_image_data)}")
-print(f"Num red images: {len(red_image_data)}")
-# Note: Obviously, since we have one set of images, which is focused on the
-# green/first target, there will be more green images than red images. This
-# should't be a problem though, as there are still around 3800 images for red,
-# when compared to around 4500 images for green
-
 # THE BELOW FUNCTIONS ARE FOR TESTING PURPOSES ONLY:
 
 def plot_image_with_points(image_data):
@@ -122,6 +111,23 @@ def iterate_through_images(image_data):
         plot_image_with_points(image)
 
 
-test = True
-if test:
-    iterate_through_images(green_image_data)
+if __name__ == "__main__":
+
+
+    data_dir = os.path.join(current_script_path, "../../godot/data_images")
+    test_image_path = os.path.join(data_dir,"image_999.png")
+
+
+    green_image_data, red_image_data = get_images_for_each_target(data_dir)
+    print(f"Num green images: {len(green_image_data)}")
+    print(f"Num red images: {len(red_image_data)}")
+    # Note: Obviously, since we have one set of images, which is focused on the
+    # green/first target, there will be more green images than red images. This
+    # should't be a problem though, as there are still around 3800 images for red,
+    # when compared to around 4500 images for green
+
+
+
+    test = True
+    if test:
+        iterate_through_images(green_image_data)
