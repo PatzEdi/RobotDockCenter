@@ -179,6 +179,8 @@ class Train:
             current_script_path,
             "../../../models/model" + str(model_num) + ".pth"
         )
+        # Move to cpu to make it easier to load later
+        model.cpu()
         # Save the trained model
         torch.save(model.state_dict(), model_save_path)
 

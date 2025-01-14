@@ -1,5 +1,6 @@
 import sys
 import torch
+import random
 import time
 import tqdm
 import os
@@ -67,6 +68,7 @@ def predict_with_image_obj(image):
 
 # This function is used to extract the outputs from tensors to a normal list.
 def parse_outputs(outputs):
+    # We access 0th index because outputs have a batch dimension
     predicted_values = outputs.tolist()[0]
 
     return predicted_values
@@ -139,35 +141,30 @@ def display_image(image_path, real_values, predicted_values, plot_pred=True):
 
 def show_images_with_plt(target_image_data, shuffle=False):
 
-    # NOTE:
-    # This is just for NOW, though, as stated also in the train script,
-    # we will convert the data targets to tensors in the future, so we load
-    # the data as tensors in memory and is much more efficient (for training
-    # especially)
-
-
     (image_paths_shuffled,
     data_targets_shuffled) = shuffle_images(target_image_data)
+    # We can print the image path for reference if needed
     print(data_targets_shuffled[0])
 
     for i in range(len(image_paths_shuffled)):
         predicted = predict(image_paths_shuffled[i])
         display_image(
             image_paths_shuffled[i],
-            # READ NOTE ABOVE!
-            data_targets_shuffled[i],
+            # Access data targets and convert to list from tensor
+            data_targets_shuffled[i].tolist(),
             parse_outputs(predicted)
         )
 
 
 def shuffle_images(target_image_data):
-    import random
     indices = list(range(len(target_image_data)))
     random.shuffle(indices)
     # Same indices for both lists so they retain relation
     images_shuffled = [target_image_data[i][0] for i in indices]
     data_targets_shuffled = [target_image_data[i][1] for i in indices]
+
     return images_shuffled, data_targets_shuffled
+
 
 def get_num_images():
     n_images = len(
