@@ -77,12 +77,20 @@ def get_images_for_each_target(data_dir):
 
             if len(green_points) > 0:
                 x_avg_green, y_avg_green = get_target_point(green_points)
-                green_images.append((image_path, (x_avg_green, y_avg_green)))
+                x_y_tensor = torch.tensor(
+                    [x_avg_green, y_avg_green],
+                    dtype=torch.float32
+                )
+                green_images.append((image_path, x_y_tensor))
             # We don't do elif here because an image can have both green and
             # red targets
             if len(red_points) > 0:
                 x_avg_red, y_avg_red = get_target_point(red_points)
-                red_images.append((image_path, (x_avg_red, y_avg_red)))
+                x_y_tensor = torch.tensor(
+                    [x_avg_red, y_avg_red],
+                    dtype=torch.float32
+                )
+                red_images.append((image_path, x_y_tensor))
 
     return green_images, red_images
 
@@ -92,7 +100,7 @@ def plot_image_with_points(image_data):
     image_path = image_data[0]
     # So connecting to that comment above, here we
     # will get the average x and y instead of the target coordinates.
-    x_avg, y_avg = image_data[1]
+    x_avg, y_avg = image_data[1].tolist()
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     plt.imshow(image)

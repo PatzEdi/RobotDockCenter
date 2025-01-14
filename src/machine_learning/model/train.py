@@ -11,9 +11,18 @@ import sys
 # For the progress bar:
 from tqdm import tqdm
 
+
+def get_device():
+    # Let's define the device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Check that MPS is available (for Macs with M chips)
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    # We return the device
+    return device
+
 # ====================
-# NOTE: This file is currently undergoing heavy refactoring.
-# Also, this  is largely for the synthetic world, alhtough for the real world
+# This  is largely for the synthetic world, alhtough for the real world
 # the implementation will be similar.
 # ====================
 current_script_path = os.path.dirname(os.path.abspath(__file__))
@@ -49,13 +58,9 @@ class TargetsDataset(Dataset):
         image = Image.open(self.target_image_data[idx][0])
 
         # idx is the image index
-        # 1 is the index of the tuple of targets
-        # 0 or 1 for the final indexing is for the target value, either
-        # x_avg or y_avg (the coords of the target point)
-        x_coord = self.target_image_data[idx][1][0]
-        y_coord = self.target_image_data[idx][1][1]
-
-        targets = torch.tensor([x_coord, y_coord], dtype=torch.float32)
+        # 1 is the index of the tuple of targets.
+        # It is already a tensor
+        targets = self.target_image_data[idx][1]
 
         if self.transform:
             image = self.transform(image)
@@ -102,6 +107,8 @@ class Train:
     @staticmethod
     def train(target_image_data, n_epochs, lr, batch_size):
 
+        # We get the device
+        device = get_device()
         # Print some general information about the training process
         print(
             f"Learning Rate: {lr}\n"
@@ -124,6 +131,7 @@ class Train:
         print("Starting training stage...\n")
         # Let's instantiate the model, criterion, and optimizer:
         model = Predictor()
+        model.to(device)
         criterion = nn.MSELoss()
         # We use Adam for adaptive learning rates rather the SGD (To be tested
         # and experimented with in the future...)
@@ -144,6 +152,8 @@ class Train:
             )
             # targets is a list: [x_coord, y_coord]
             for image, targets in dataloader:
+                image = image.to(device)
+                targets = targets.to(device)
                 # Zero the gradients (to avoid accumulation, as Pytorch)
                 optimizer.zero_grad()
                 outputs = model(image) # Retreive the model's output
