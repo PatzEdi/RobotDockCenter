@@ -61,8 +61,9 @@ def get_target_point(target_coordinates):
         x_sum += target_coords[0]
         y_sum += target_coords[1]
 
-    x_avg = x_sum / len(target_coordinates)
-    y_avg = y_sum / len(target_coordinates)
+    # Get points and normalize them 0-1
+    x_avg = x_sum / len(target_coordinates) / 512
+    y_avg = y_sum / len(target_coordinates) / 512
 
     return x_avg, y_avg
 

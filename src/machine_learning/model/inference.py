@@ -72,6 +72,9 @@ class InferenceTools:
         # We access 0th index because outputs have a batch dimension
         predicted_values = outputs.tolist()[0]
 
+        # Mutliply each element by 512
+        predicted_values = [x * 512 for x in predicted_values]
+
         return predicted_values
 
 
@@ -194,6 +197,8 @@ class PltInferenceView(InferenceTools):
         ax.clear()
         image_path = self.target_image_data[index][0]
         real_targets = self.target_image_data[index][1].tolist()
+        # Convert to pixels from normalized 0-1 model output
+        real_targets = [x * 512 for x in real_targets]
         predicted = self.parse_outputs(self.predict(image_path))
         # Convert using pillow
         image = Image.open(image_path)

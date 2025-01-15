@@ -132,7 +132,7 @@ class Train:
         # Let's instantiate the model, criterion, and optimizer:
         model = Predictor()
         model.to(device)
-        criterion = nn.MSELoss()
+        criterion = nn.L1Loss()
         # We use Adam for adaptive learning rates rather the SGD (To be tested
         # and experimented with in the future...)
 
@@ -215,7 +215,7 @@ if __name__=="__main__":
     , and then finally, the training loop
     """
     learning_rate = 0.0005
-    batch_size = 8 # Leave at one for stochastic gradient descent
+    batch_size = 16 # Leave at one for stochastic gradient descent
     num_epochs = 15
 
     # We train the model and get the loss values in doing so
