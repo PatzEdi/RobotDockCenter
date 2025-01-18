@@ -68,15 +68,26 @@ def get_target_point(target_coordinates):
     return x_avg, y_avg
 
 # Here we have a function that separates images based on the targets they have
-def get_images_for_each_target(data_dir):
+def get_images_for_each_target(data_dir, n_images_cls=-1):
+    #
+    #
+    # TODO: Add a counter to this function so that we can
+    # define how many images we want to load (especially useful for inference
+    # and/or splitting the data into training and testing sets)
+    #
+    #
     green_images = []
     red_images = []
     for image in os.listdir(data_dir):
+        # Check if we have the amount of images we want
+        if len(green_images) == n_images_cls and len(red_images) == n_images_cls:
+            break
         if image.endswith(".png"):
             image_path = os.path.join(data_dir, image)
             green_points, red_points = get_contour_points(image_path)
-
-            if len(green_points) > 0:
+            # Get the target points for green. Only add the image if we haven't
+            # reached out limit for the green class
+            if len(green_points) > 0 and len(green_images) != n_images_cls:
                 x_avg_green, y_avg_green = get_target_point(green_points)
                 x_y_tensor = torch.tensor(
                     [x_avg_green, y_avg_green],
@@ -84,8 +95,9 @@ def get_images_for_each_target(data_dir):
                 )
                 green_images.append((image_path, x_y_tensor))
             # We don't do elif here because an image can have both green and
-            # red targets
-            if len(red_points) > 0:
+            # red targets. Also, same thing here. Only add the image if we
+            # haven't reached our limit for the red class.
+            if len(red_points) > 0 and len(red_images) != n_images_cls:
                 x_avg_red, y_avg_red = get_target_point(red_points)
                 x_y_tensor = torch.tensor(
                     [x_avg_red, y_avg_red],
@@ -126,10 +138,15 @@ if __name__ == "__main__":
     data_dir = os.path.join(current_script_path, "../../godot/data_images")
     test_image_path = os.path.join(data_dir,"image_999.png")
 
-
-    green_image_data, red_image_data = get_images_for_each_target(data_dir)
+    # Get the target points. If you want a set amount per class, you can
+    # specify the amount with the n_images_cls parameter. If left blank,
+    # all images will be loaded
+    green_image_data, red_image_data = get_images_for_each_target(data_dir, n_images_cls=10)
     print(f"Num green images: {len(green_image_data)}")
     print(f"Num red images: {len(red_image_data)}")
+    print(len(green_image_data))
+    print(len(red_image_data))
+    exit()
     # Note: Obviously, since we have one set of images, which is focused on the
     # green/first target, there will be more green images than red images. This
     # should't be a problem though, as there are still around 3800 images for red,

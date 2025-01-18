@@ -199,8 +199,13 @@ if __name__=="__main__":
     print("Getting & preprocessing data...")
     # Target 1 is for the green target, and target 2 is for the red target
     # TODO: We need to change this so that only one target data is loaded,
-    # so that time and memory is saved.
-    target_1_data, target_2_data = get_images_for_each_target(data_dir)
+    # so that time and memory is saved. Also, for now, we load all the images
+    # available. In the future, we will split the data into training and
+    # testing sets.
+    target_1_data, target_2_data = get_images_for_each_target(
+        data_dir,
+        n_images_cls=-1
+    )
 
     model_num = int(config_parser.get_model_num())
 

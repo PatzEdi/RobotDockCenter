@@ -24,10 +24,13 @@ model_num = 1
 
 class InferenceTools:
 
-    def load_target_image_data(self, model_num):
+    def load_target_image_data(self, model_num, n_images=-1):
 
         print("\nLoading target image data...")
-        target_1_data, target_2_data = get_images_for_each_target(data_dir)
+        target_1_data, target_2_data = get_images_for_each_target(
+            data_dir,
+            n_images_cls=n_images
+        )
 
         target_image_data = target_1_data
 
@@ -153,7 +156,10 @@ if __name__ == "__main__":
     inference_tools = InferenceTools()
     # Load some stuff based on model num
     inference_tools.load_model(model_num)
-    target_image_data = inference_tools.load_target_image_data(model_num)
+    target_image_data = inference_tools.load_target_image_data(
+        model_num,
+        n_images=10
+    )
 
     # Instance the PltInferenceView class
     inference_image_viewer = PltInferenceView(target_image_data)
