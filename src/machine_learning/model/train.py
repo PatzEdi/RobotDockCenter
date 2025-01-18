@@ -105,8 +105,9 @@ class Predictor(nn.Module):
 class Train:
     # Let's add a train function here to train the model for organization
     @staticmethod
-    def train(target_image_data, n_epochs, lr, batch_size):
+    def train(target_image_data, n_epochs, lr, batch_size, model_num):
 
+        print(f"\nTotal Training Images: {len(target_image_data)}")
         # We get the device
         device = get_device()
         # Print some general information about the training process
@@ -224,6 +225,7 @@ if __name__=="__main__":
         num_epochs,
         learning_rate,
         batch_size,
+        model_num
     )
 
     # Let's graph the loss values with plt:
