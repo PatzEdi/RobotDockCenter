@@ -91,13 +91,7 @@ class InferenceTools:
 
     # Shuffle images around for more random viewing
     def shuffle_images(self, target_image_data):
-        indices = list(range(len(target_image_data)))
-        random.shuffle(indices)
-        # Same indices for both lists so they retain relation
-        images_shuffled = [target_image_data[i][0] for i in indices]
-        data_targets_shuffled = [target_image_data[i][1] for i in indices]
-
-        return images_shuffled, data_targets_shuffled
+        random.shuffle(target_image_data)
 
 # Specifically for the view
 class PltInferenceView(InferenceTools):
@@ -107,7 +101,7 @@ class PltInferenceView(InferenceTools):
         self.plot_pred = plot_pred
 
         if shuffle_images:
-            self.target_image_data = self.shuffle_images(target_image_data)
+            self.shuffle_images(self.target_image_data)
 
 
     # Function to update the displayed image
@@ -158,10 +152,13 @@ if __name__ == "__main__":
     inference_tools.load_model(model_num)
     target_image_data = inference_tools.load_target_image_data(
         model_num,
-        n_images=10
+        n_images=50
     )
 
     # Instance the PltInferenceView class
-    inference_image_viewer = PltInferenceView(target_image_data)
+    inference_image_viewer = PltInferenceView(
+        target_image_data,
+        shuffle_images=False
+    )
     # Setup and launch
     inference_image_viewer.setup_plt()
