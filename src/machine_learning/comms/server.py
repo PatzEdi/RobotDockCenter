@@ -32,8 +32,9 @@ class BotMovementCriteria:
         self.x_bound_switch = (256 - x_distance_switch, 256 + x_distance_switch)
         # y_bound is the plus/minus from the center
         # of the image in the y direction (vertical).
-        # This way, we create a "box"
-        self.y_bound_switch = y_distance_switch
+        # This way, we create a "box". We subtract from 512
+        # as the y coordinate is from the top left corner
+        self.y_bound_switch = 512 - y_distance_switch
 
         # Other instance vars:
         self.inference = inference.InferenceTools()
@@ -44,7 +45,7 @@ class BotMovementCriteria:
     def is_in_switch_area(self, x, y):
         """ Check if the target is in the switch area
         If it is, then we switch to the second model"""
-        return self.x_bound_switch[0] < x < self.x_bound_switch[1] and y < self.y_bound_switch
+        return self.x_bound_switch[0] < x < self.x_bound_switch[1] and y > self.y_bound_switch
 
 
     def is_in_center_box(self, x, y):

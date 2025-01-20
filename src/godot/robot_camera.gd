@@ -12,7 +12,7 @@ func _ready():
     http_request.request_completed.connect(_on_request_completed)
     self.add_child(http_request)
     # Let's set a random starting point for the robot:
-    var random_z = randf_range(-4,4)
+    var random_z = randf_range(-2,2)
 #
 #
 #	# We transform both the robot body and the camera:
