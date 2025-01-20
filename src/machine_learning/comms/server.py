@@ -13,7 +13,7 @@ import inference  # Your inference script
 
 
 class BotMovementCriteria:
-    def __init__(self, x_distance_switch, y_distance_switch, x_distance_center):
+    def __init__(self, x_distance_switch, y_distance_switch, x_distance_center_target_1, x_distance_center_target_2):
         # For center box (We don't need a y distance for the center box, as
         # anyting within the x distance centered but not in the switch box
         # is considered in the center box and therefore a move forward action.
@@ -21,7 +21,11 @@ class BotMovementCriteria:
         # target is far away and in the center box, as we continue to move
         # forward it will go outside of the center box, making us turn toward
         # it.
-        self.x_bound_center = (256 - x_distance_center, 256 + x_distance_center)
+        self.x_bound_center = (256 - x_distance_center_target_1, 256 + x_distance_center_target_1)
+        # We have this second one as for the second target (the dock), which is
+        # closer, we need a smaller x distance for the center box for
+        # more precision.
+        self.x_distance_center_target_2 = x_distance_center_target_2
         # Note: the reason why we have separate x bounds for the two boxes is
         # because the center box will be slimmer, as the switch box has a
         # closer perspective and thus as allow for a wider range of x values.
@@ -78,7 +82,10 @@ class BotMovementCriteria:
     def get_bot_action(self, x, y):
         """ This function contains all of our logic for deciding what the
         next action should be. It should return either 0 (rotate right),
-        1 (rotate left), or 2 (move forward)."""
+        1 (rotate left), or 2 (move forward). The third action (3)
+        is a special action that is used to move forward a fixed amount,
+        used for when switching models to ensure bot is more on top of the
+        first target rather than in front."""
 
         # NOTE: We will implement a yolo model to see if the targets
         # are actually there. For now though, we will simulate
@@ -95,6 +102,11 @@ class BotMovementCriteria:
             self.changed_model = True
             print("Switched to model 2!")
             self.target_num = 2 # target is now the dock
+            # We also make the center box more narrow:
+            self.x_bound_center = (
+                256 - self.x_distance_center_target_2,
+                256 + self.x_distance_center_target_2)
+            return 3 # special action of moving forward a fixed amount
         elif self.is_in_center_box(x, y):
             return 2
 
@@ -104,8 +116,8 @@ class BotMovementCriteria:
 
 
 class BotFlaskApp(BotMovementCriteria):
-    def __init__(self, x_distance, y_distance, x_distance_center):
-        super().__init__(x_distance, y_distance, x_distance_center)
+    def __init__(self, x_distance, y_distance, x_distance_center, x_distance_center_target_2):
+        super().__init__(x_distance, y_distance, x_distance_center, x_distance_center_target_2)
         # Inference tools class
         self.app = Flask(__name__)
         self.set_app_routes()
@@ -158,5 +170,5 @@ class BotFlaskApp(BotMovementCriteria):
         self.app.run()
 
 if __name__ == "__main__":
-   app = BotFlaskApp(40, 80, 20)
+   app = BotFlaskApp(40, 80, 20, 15)
    app.run(debug=False)

@@ -45,7 +45,6 @@ func _on_request_completed(_result, _response_code, _headers, body):
     
     # We put the code to move the robot here:
     parse_action_and_move(action)
-    
     send_image()
 
 # This is used for the initial placement of the robot
@@ -64,9 +63,9 @@ func rotate_randomly(degree_range=25):
 func parse_action_and_move(action):
     await get_tree().process_frame
     # How much the bot moves per action passed.
-    var bot_movement_forward_amount = .5
+    var bot_movement_forward_amount = 1
     var bot_rotation_amount = .5
-    
+    var fixed_forward_amount_special_action = 5
     
     if (action == 1):
         self.rotation.y += deg_to_rad(-bot_rotation_amount)
@@ -78,6 +77,13 @@ func parse_action_and_move(action):
         var fps = Engine.get_frames_per_second()
         var delta = 1.0 / fps
         
-        # Here we would put an if else statement regarding whether or not to move forward or backward.
+        if action == 3:
+            # Special action to move forward a fixed amount
+            for i in range(10):
+                robot_body.global_transform.origin -= global_transform.basis.z * fixed_forward_amount_special_action * delta
+                self.global_transform.origin -= global_transform.basis.z * fixed_forward_amount_special_action * delta
+                await get_tree().process_frame
+            return
         robot_body.global_transform.origin -= global_transform.basis.z * bot_movement_forward_amount * delta
         self.global_transform.origin -= global_transform.basis.z * bot_movement_forward_amount * delta
+        await get_tree().process_frame
