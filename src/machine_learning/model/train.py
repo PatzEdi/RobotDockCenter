@@ -2,6 +2,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.transforms.functional as F2
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
@@ -41,14 +42,47 @@ from target_extraction import get_images_for_each_target
 # ensure equal image sizes, as each image is already 512x512.
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
+    # Let's random grayscale the image with a probability of 0.5
+    transforms.RandomGrayscale(p=0.5),
     transforms.ToTensor()
 ])
 
+# Let's create a function that performs data augmentation
+# by flipping the image vertically randomly with a probability.
+# We need to make this custom as when we do this, the coordinates
+# need to be flipped as well.
+def custom_vertical_flip(p, image, targets):
+    """ Flip the image vertically with a probability p.
+    Targets is expected to be in the form a tensor of size [1, 2],
+    with normalized (divided by 512) target coords."""
+    if torch.rand(1) < p:
+        # We flip the image vertically
+        image = F2.vflip(image)
+        # We need to flip the y coordinate, but not the x coordinate
+        # as the x coordinate is the same.
+        targets[1] = abs(1 - targets[1])
+    return image, targets
+
+
+def custom_horizontal_flip(p, image, targets):
+    """ Flip the image horizontally with a probability p.
+    Targets is expected to be in the form a tensor of size [1, 2],
+    with normalized (divided by 512) target coords."""
+    if torch.rand(1) < p:
+        # We flip the image horizontally
+        image = F2.hflip(image)
+        # We need to flip the x coordinate, but not the y coordinate
+        # as the y coordinate is the same.
+        targets[0] = abs(1 - targets[0])
+    return image, targets
+
+
 # The custom dataset class used later in the Dataloader:
 class TargetsDataset(Dataset):
-    def __init__(self, target_image_data, transform=None):
+    def __init__(self, target_image_data, transform=None, augment=True):
         self.target_image_data = target_image_data
         self.transform = transform
+        self.augment = augment
 
     def __len__(self):
         # Return amount of images in the data set
@@ -64,6 +98,10 @@ class TargetsDataset(Dataset):
 
         if self.transform:
             image = self.transform(image)
+
+        if self.augment:
+            # Data augmentation
+            image, targets = custom_vertical_flip(.5, image, targets)
 
         return image, targets # Return image w/targets
 
@@ -105,7 +143,7 @@ class Predictor(nn.Module):
 class Train:
     # Let's add a train function here to train the model for organization
     @staticmethod
-    def train(target_image_data, n_epochs, lr, batch_size, model_num):
+    def train(target_image_data, n_epochs, lr, batch_size, model_num, augment):
 
         print(f"\nTotal Training Images: {len(target_image_data)}")
         # We get the device
@@ -120,7 +158,8 @@ class Train:
         # Let's instantiate the dataset class and the Pytorch Dataloader:
         targets_dataset = TargetsDataset(
             target_image_data,
-            transform=transform
+            transform=transform,
+            augment=augment
         )
 
         dataloader = DataLoader(
@@ -221,8 +260,8 @@ if __name__=="__main__":
     , and then finally, the training loop
     """
     learning_rate = 0.0005
-    batch_size = 16 # Leave at one for stochastic gradient descent
-    num_epochs = 15
+    batch_size = 32 # Leave at one for stochastic gradient descent
+    num_epochs = 20
 
     # We train the model and get the loss values in doing so
     loss_values = Train.train(
@@ -230,7 +269,8 @@ if __name__=="__main__":
         num_epochs,
         learning_rate,
         batch_size,
-        model_num
+        model_num,
+        augment=True
     )
 
     # Let's graph the loss values with plt:

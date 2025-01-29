@@ -5,9 +5,10 @@ import time
 import tqdm
 import os
 import matplotlib.pyplot as plt
+import torchvision.transforms.functional as F2
 from train import Predictor
-from train import transform
 from PIL import Image
+from torchvision import transforms
 
 current_script_path = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(current_script_path, "../../godot/data_images")
@@ -18,7 +19,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../data"))
 from target_extraction import get_images_for_each_target
 
 model = Predictor()
-
+# We don't need data augmentation for inference, so we only resize and convert
+# to tensor
+transform = transforms.Compose([
+    transforms.Resize((128, 128)),
+    transforms.ToTensor()
+])
 
 class InferenceTools:
 
@@ -146,7 +152,7 @@ class PltInferenceView(InferenceTools):
 
 if __name__ == "__main__":
     # Let's just manually set the model num for now
-    model_num = 1
+    model_num = 2
     inference_tools = InferenceTools()
     # Load some stuff based on model num
     inference_tools.load_model(model_num)
