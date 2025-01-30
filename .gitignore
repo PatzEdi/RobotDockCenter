@@ -5,6 +5,7 @@
 *.md5
 *.ctex
 *.png
+!assets/latest_loss_curve.png
 *.translation
 *.pth
 *.csv

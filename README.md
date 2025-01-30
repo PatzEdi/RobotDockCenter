@@ -1,36 +1,42 @@
 # RobotDockCenter
- Applying machine learning techniques to create an automatic charge docking system for robots.
+Applying machine learning techniques to create an automatic charge docking system for robots.
 
-This project utilizes the Godot game engine in order to retrieve image data. It aims to automate the docking of robots into their charging stations.
+This project utilizes the Godot game engine in order to train & inference on synthetic image data. We use the game engine to simulate the robot docking process & optimize our methodology. Our main goal is to automate the docking of robots into their charging stations in a light-weight manner.
+
+**PLEASE READ:**
+> [!CAUTION]
+> This project is still in heavy development and should be handled with caution. The code is not yet covered by tests, and is not documented fully. I have posted this sub-part of a bigger project (read below) as a way to show my progress on what I am currently working on.
+ 
+> [!NOTE]
+> This project is part of a larger project that will be released soon. That project has not been published yet, as it still needs to be developed further (is quite huge altogether). Also, the paper is still under development for this project as well.
 
 ## **Current Progress:**
-A new method is being implemented. It is not described here yet as I have planned it out on paper. So, future commits will likely be centered around this new method.
-If I see that it is feasible, I will include the method here or in a separate document.
+**A new method is being implemented and tested.** Before, we relied strictly on game engine labels for training, which were unrealistic to get in the real world. This new version works slightly differently, but is actually possible to translate to the real world. You can read more about it [here](/docs/the_new_method.md).
 
 ## **Current Godot Engine Version Used:**
 **4.3**
 
-**Docking Demo (7-14-24)**
+**Docking Demo (1-30-25)**
 
 [DockingDemo](https://github.com/user-attachments/assets/17d77959-a484-4489-93ab-d440e66e084c)
 
 **Current Data Info:**
 
 ```
-6630 images (for each model)
+There are around 4000 images that were used to train each model
 ```
 
-**Loss Curve (healthy):**
-✅
+**Loss Graph (average loss reporting)**
 
-![Alt text](assets/latest_loss_curve.jpg "Current Loss Curve")
+![Alt text](assets/latest_loss_curve.png "Current Loss Curve")
 
 **trained with:**
 ```
-learning_rate = 0.001 (or .0005)
-batch_size = 16
-num_epochs = 15
-
-weight_distance = .85
-weight_rotation_value = .9
+learning_rate = 0.0005
+batch_size = 32
+num_epochs = 20
 ```
+
+> [!NOTE]
+> If you want to know how the current method works, please read the [new method](/docs/the_new_method.md) documentation. I also explain how the current version uses three models, which can also be translated to one, single yolo model!
+> Keep in mind that our goal for this docking process is to have light-weight models that even a Raspberry Pi can run sufficiently. This makes computer power a constraint, and something to keep in mind. There is so much to write about in the RobotDockCenter paper and I am very excited to share my thoughts.
