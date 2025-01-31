@@ -36,6 +36,7 @@ learning_rate = 0.0005
 batch_size = 32
 num_epochs = 20
 ```
+**For each of the two custom models**, they are trained with sometimes different parameters. For example, the first one converges much better if our custom augmentation of vertically flipping images randomly with p=.5 is **not** used. The second model converges better with this augmentation. This is something that I am still trying to understand, but it is interesting to see how different models can be trained with different parameters. I talk more about this in the [new method](/docs/the_new_method.md) documentation.
 
 > [!NOTE]
 > If you want to know how the current method works, please read the [new method](/docs/the_new_method.md) documentation. I also explain how the current version uses three models, which can also be translated to one, single yolo model!

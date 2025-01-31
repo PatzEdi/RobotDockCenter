@@ -42,8 +42,6 @@ from target_extraction import get_images_for_each_target
 # ensure equal image sizes, as each image is already 512x512.
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
-    # Let's random grayscale the image with a probability of 0.5
-    transforms.RandomGrayscale(p=0.5),
     transforms.ToTensor()
 ])
 
@@ -53,7 +51,7 @@ transform = transforms.Compose([
 # need to be flipped as well.
 def custom_vertical_flip(p, image, targets):
     """ Flip the image vertically with a probability p.
-    Targets is expected to be in the form a tensor of size [1, 2],
+    Targets is expected to be in the form a tensor of size 2,
     with normalized (divided by 512) target coords."""
     if torch.rand(1) < p:
         # We flip the image vertically
@@ -66,7 +64,7 @@ def custom_vertical_flip(p, image, targets):
 
 def custom_horizontal_flip(p, image, targets):
     """ Flip the image horizontally with a probability p.
-    Targets is expected to be in the form a tensor of size [1, 2],
+    Targets is expected to be in the form a tensor of size 2,
     with normalized (divided by 512) target coords."""
     if torch.rand(1) < p:
         # We flip the image horizontally
@@ -152,7 +150,9 @@ class Train:
         print(
             f"Learning Rate: {lr}\n"
             f"Batch Size: {batch_size}\n"
-            f"Num Training Epochs: {n_epochs}"
+            f"Num Training Epochs: {n_epochs}\n"
+            f"Device: {device}\n"
+            f"Custom Augment: {augment}"
         )
 
         # Let's instantiate the dataset class and the Pytorch Dataloader:
@@ -270,7 +270,7 @@ if __name__=="__main__":
         learning_rate,
         batch_size,
         model_num,
-        augment=True
+        augment=False
     )
 
     # Let's graph the loss values with plt:
