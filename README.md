@@ -16,9 +16,11 @@ This project utilizes the Godot game engine in order to train & inference on syn
 ## **Current Godot Engine Version Used:**
 **4.3**
 
-**Docking Demo (1-30-25)**
+**Docking Demo (2-4-25)**
+> [!NOTE]
+> As seen in the video below, the current version of centering to the dock is not perfect, as it tends to turn left when moving toward the dock. I am still working on this, and there are certain things that can be done in order to mitigate it. You can read more about it in the [new method](/docs/the_new_method.md) documentation.
 
-[DockingDemo](https://github.com/user-attachments/assets/17d77959-a484-4489-93ab-d440e66e084c)
+[DockingDemo](https://github.com/user-attachments/assets/cd3fbc99-2541-4ef9-98c2-326607a93ef1)
 
 **Current Data Info:**
 
