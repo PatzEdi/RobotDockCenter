@@ -50,11 +50,11 @@ Robot docking is a fundamental task in autonomous systems, enabling robots to re
 
 In recent years, reinforcement learning has emerged as a popular method for enhancing robotic autonomy. However, reinforcement learning techniques typically require extensive training with reward functions and policy optimization, which can be computationally intensive and time-consuming.
 
-In this paper, we propose an alternative approach to robot docking that leverages monocular vision and supervised learning. Our method eliminates the need for additional sensors and reinforcement learning, simplifying the hardware requirements and reducing computational overhead. By using deep learning techniques, we predict the necessary rotation and distance adjustments for the robot to dock accurately based on a single input frame containing the target docking station.
+In this paper, we propose an alternative approach to robot docking that leverages monocular vision and supervised learning. Our method eliminates the need for additional sensors and reinforcement learning, simplifying the hardware requirements and reducing computational overhead. By using deep learning techniques, we predict the necessary target coordinates for the robot to dock accurately based on a single input frame containing one of two targets: The first target that is required for the robot to know it is centered with the dock, and the second target, the docking station itself.
 
-We utilize the Godot game engine to create a simulated environment for data collection, capturing images of the docking station from various angles and distances. These images are then used to train a deep learning model implemented in PyTorch. The trained model is capable of making real-time predictions, which can be integrated with a Flask server to facilitate seamless communication with the robot's control system.
+We utilize the Godot game engine to create a simulated environment for data collection, capturing images of the docking station from various angles and distances. These images are then used to train a deep learning model implemented in PyTorch. The trained model is capable of making real-time predictions, which can be integrated with a Flask server to facilitate seamless communication with the robot's control system to test the performance in a virtual docking environment.
 
-Our approach demonstrates that monocular vision, combined with deep learning, can be a viable solution for robot docking. This method not only simplifies the hardware setup but also provides accurate and efficient docking without the need for complex reinforcement learning algorithms.
+Our approach demonstrates that monocular vision, combined with deep learning, can be a viable solution for robot docking when dealing with limited compute power. This method not only simplifies the hardware setup but also provides accurate and efficient docking without the need for complex reinforcement learning algorithms. The rest of this paper is focused on the virtual world, but a very important idea here is that these methods can all be used to train a real-world robot to dock in the real world, as described later on.
 
 The remainder of this paper is organized as follows: Section 2 reviews related work in the field of robot docking. Section 3 details our methodology, including data collection, model training, and inference. Section 4 presents our experimental results and evaluation metrics. Finally, Section 5 concludes the paper and outlines future research directions.
 
@@ -66,7 +66,7 @@ The work of \citet{app131910675} provides a comprehensive review of existing doc
 In this section, we describe our approach to robot docking using monocular vision and deep learning techniques. Our methodology involves data collection, model training, and inference, as detailed below.
 
 \subsection{Data Collection}
-We collect training data using a simulated environment created in Godot, a popular game engine. The environment consists of a robot and a docking station, with the robot's camera capturing images of the docking station from various angles. The images are annotated with the target rotation and distance values required for docking.
+We collect training data using a simulated environment created in Godot, a popular game engine. The environment consists of a robot and a docking station, with the robot's camera capturing images of the docking station from various angles. We then extract the coordinates of the targets using OpenCV, something that can only be done in the virtual world, as the real world does indeed have red and green in its colors, not just for the targets (as is used in the virtual world).
 \textbf{(Here, we will include a figure showing the simulated environment and how everything works)}
 
 \subsection{Model Training}
@@ -79,10 +79,10 @@ We collect training data using a simulated environment created in Godot, a popul
 \end{enumerate}
 
 \subsection{Inference}
-For inference, we use the trained model to predict the next action based on a single input frame. The inference process is implemented in. The `predict` function takes an image as input, preprocesses it, and outputs the predicted rotation and distance values.
+For inference, we use the trained model to predict the next action based on a single input frame. The `predict` function takes an image as input, preprocesses it, and outputs the predicted target coordinates.
 
 \subsection{Server Integration}
-To facilitate real-time predictions, we can integrate the inference script with a Flask server, as shown in . The server receives images via POST requests, runs the inference, and returns the predicted values. This setup allows for seamless integration with other systems and real-time decision-making.
+To facilitate real-time predictions, we can integrate the inference script with a Flask server, as shown in . The server receives images via POST requests, runs the inference, and returns the next action the virtual robot should take. This setup allows for seamless integration with other systems and real-time decision-making.
 
 \subsection{Evaluation}
 We evaluate the performance of our model using various metrics, including accuracy and loss values. The evaluation scripts are included in [tests/tests.py](tests/tests.py), which contain unit tests to ensure the correctness and robustness of our data processing and model training pipelines.
