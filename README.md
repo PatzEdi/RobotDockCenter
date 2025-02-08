@@ -43,3 +43,11 @@ num_epochs = 20
 > [!NOTE]
 > If you want to know how the current method works, please read the [new method](/docs/the_new_method.md) documentation. I also explain how the current version uses three models, which can also be translated to one, single yolo model!
 > Keep in mind that our goal for this docking process is to have light-weight models that even a Raspberry Pi can run sufficiently. This makes computer power a constraint, and something to keep in mind. There is so much to write about in the RobotDockCenter paper and I am very excited to share my thoughts.
+
+## **License**
+For now, this entire repository is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+This may change as the project progresses, but at this stage, all files and directories are covered under this license.
+
+You can read more about CC BY 4.0 [here](https://creativecommons.org/licenses/by/4.0/).
+
+In order to give me proper credit for my work, please read the [ATTRIBUTION.md](ATTRIBUTION.md) file.
