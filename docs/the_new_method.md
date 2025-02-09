@@ -26,7 +26,7 @@ This system, however, is aimed at being light-weight, and is also aimed at using
 
 Our main goal is to show how even the most basic of machine learning models can be used to automate a robot docking system with much more relaibility than standard image-processing algorithms through e.g. opencv, which also helps understand the vast possibilities of machine learning regarding greater complexity.
 
-I myself aim to express all my ideas in the paper that I am writing, which I hope to release soon. You can check it out [here](paper/tex/RobotDockCenter.tex), it is directly in this repository. It is still in its very early stages though, and will take lots of time to finish and refine, so I hope you find value in my improvements over time.
+I myself aim to express all my ideas in the paper that I am writing, which I hope to release soon. You can check it out [here](/paper/tex/RobotDockCenter.pdf), it is directly in this repository. It is still in its very early stages though, and will take lots of time to finish and refine, so I hope you find value in my improvements over time.
 
 ## Review of the Old Method
 The old method had two main values that were gathered as labels, or i.e. ground truth labels to train our model:
