@@ -1,0 +1,13 @@
+\section{Introduction}
+Robot docking is a fundamental task in autonomous systems, enabling robots to recharge and continue their designated workflows without human intervention. Traditional autonomous docking solutions often rely on a combination of various sensors, such as LIDAR scanners, ultrasonic sensors, and cameras \citep{app131910675}. While these multi-sensor approaches can be effective, they introduce additional hardware complexity and cost.
+
+In recent years, reinforcement learning has emerged as a popular method for enhancing robotic autonomy. However, reinforcement learning techniques typically require extensive training with reward functions and policy optimization, which can be computationally intensive and time-consuming.
+
+In this paper, we propose an alternative approach to robot docking that leverages monocular vision and supervised learning. Our method eliminates the need for additional sensors and reinforcement learning, simplifying the hardware requirements and reducing computational overhead. By using deep learning techniques, we predict the necessary target coordinates for the robot to dock accurately based on a single input frame containing one of two targets: The first target that is required for the robot to know it is centered with the dock, and the second target, the docking station itself.
+
+We utilize the Godot game engine to create a simulated environment for data collection, capturing images of the docking station from various angles and distances. These images are then used to train a deep learning model implemented in PyTorch. The trained model is capable of making real-time predictions, which can be integrated with a Flask server to facilitate seamless communication with the robot's control system to test the performance in a virtual docking environment.
+
+Our approach demonstrates that monocular vision, combined with deep learning, can be a viable solution for robot docking when dealing with limited compute power. This method not only simplifies the hardware setup but also provides accurate and efficient docking without the need for complex reinforcement learning algorithms. The rest of this paper is focused on the virtual world, but a very important idea here is that these methods can all be used to train a real-world robot to dock in the real world, as described later on.
+
+The remainder of this paper is organized as follows: Section 2 reviews related work in the field of robot docking. Section 3 details our methodology, including data collection, model training, and inference. Section 4 presents our experimental results and evaluation metrics. Finally, Section 5 concludes the paper and outlines future research directions.
+

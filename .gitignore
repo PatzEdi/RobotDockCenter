@@ -16,11 +16,12 @@
 src/godot/.godot/
 
 # We also only want to include important tex files for the paper:
-paper/tex/*
-!paper/tex/*.tex
-!paper/tex/*.bib
-!paper/tex/*.cls
-!paper/tex/*.pdf
+paper/tex/*.gz
+paper/tex/*.log
+paper/tex/*.out
+paper/tex/*.fls
+paper/tex/*.fdb_latexmk
+paper/tex/*.aux
 
 # For the linter we are using:
 ruff.toml
