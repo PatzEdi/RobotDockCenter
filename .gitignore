@@ -9,7 +9,7 @@
 *.translation
 *.pth
 *.csv
-
+*.swp
 .vscode
 
 # We don't need the generatable files from godot:
@@ -22,6 +22,7 @@ paper/tex/*.out
 paper/tex/*.fls
 paper/tex/*.fdb_latexmk
 paper/tex/*.aux
+paper/tex/*.blg
 
 # For the linter we are using:
 ruff.toml

@@ -1,9 +1,21 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{3}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ameen et~al.(2023)Ameen, Siriwardana, and Theodoridis]{ameen2023optimizingdeeplearningmodels}
+Salem Ameen, Kangaranmulle Siriwardana, and Theo Theodoridis.
+\newblock Optimizing deep learning models for raspberry pi.
+\newblock \emph{arXiv preprint arXiv:2304.13039}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2304.13039}.
+
+\bibitem[Deisenroth et~al.(2012)Deisenroth, Rasmussen, and Fox]{Deisenroth2012}
+Marc~Peter Deisenroth, Carl~Edward Rasmussen, and Dieter Fox.
+\newblock Learning to control a low-cost manipulator using data-efficient reinforcement learning.
+\newblock In Hugh Durrant-Whyte, Nicholas Roy, and Pieter Abbeel, editors, \emph{Robotics: Science and Systems VII}, 2012.
+\newblock URL \url{https://www.roboticsproceedings.org/rss07/p08.pdf}.
 
 \bibitem[Jia et~al.(2023)Jia, Afaq, Ripka, Huda, and Ahmad]{app131910675}
 Feiyu Jia, Misha Afaq, Ben Ripka, Quamrul Huda, and Rafiq Ahmad.
