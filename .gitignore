@@ -10,7 +10,16 @@
 *.pth
 *.csv
 *.swp
+*.swo
 .vscode
+
+*.gz
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.aux
+*.blg
 
 # We don't need the generatable files from godot:
 src/godot/.godot/

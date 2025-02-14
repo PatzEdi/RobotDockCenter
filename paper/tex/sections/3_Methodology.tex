@@ -1,10 +1,10 @@
 \section{Methodology}
 % Description of your proposed methodology or approach
-In this section, we describe our approach to robot docking using monocular vision and deep learning techniques. Our methodology involves data collection, model training, and inference, as detailed below.
+In this section, we display how effective image preprocessing and our docking procedure collectively lead to a plausible method to train our model without manual labeling, which would be required, for our case, in real-world applications. Our methodology includes data collection, model training, inference, server integration, evaluation, and experimental setup.
 
 \subsection{Data Collection}
-We collect training data using a simulated environment created in Godot, a popular game engine. The environment consists of a robot and a docking station, with the robot's camera capturing images of the docking station from various angles. We then extract the coordinates of the targets using OpenCV, something that can only be done in the virtual world, as the real world does indeed have red and green in its colors, not just for the targets (as is used in the virtual world).
-\textbf{(Here, we will include a figure showing the simulated environment and how everything works)}
+We collect training data using a simulated environment created in a game engine \citep{hoster2024usinggameenginesmachine}. Our game engine of choice is Godot, a free and open source game engine. The environment consists of a robot and a docking station, with the robot's camera capturing images of the docking station from various angles. We then extract the coordinates of the targets using OpenCV, something that can only be done in the virtual world, as the real world does indeed have red and green in its colors, not just for the targets (as is used in the virtual world).
+\input{figures/virtual_world_labeled.tex}
 
 \subsection{Model Training}
 % We train a deep learning model using PyTorch, as implemented in [src/machine_learning/model1/train.py](src/machine_learning/model1/train.py). The model architecture is defined in the `Predictor` class, and the training process involves the following steps:

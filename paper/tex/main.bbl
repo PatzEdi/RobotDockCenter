@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -6,19 +6,25 @@
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
 \bibitem[Ameen et~al.(2023)Ameen, Siriwardana, and Theodoridis]{ameen2023optimizingdeeplearningmodels}
-Salem Ameen, Kangaranmulle Siriwardana, and Theo Theodoridis.
+Ameen, S., Siriwardana, K., and Theodoridis, T.
 \newblock Optimizing deep learning models for raspberry pi.
 \newblock \emph{arXiv preprint arXiv:2304.13039}, 2023.
 \newblock URL \url{https://arxiv.org/abs/2304.13039}.
 
 \bibitem[Deisenroth et~al.(2012)Deisenroth, Rasmussen, and Fox]{Deisenroth2012}
-Marc~Peter Deisenroth, Carl~Edward Rasmussen, and Dieter Fox.
+Deisenroth, M.~P., Rasmussen, C.~E., and Fox, D.
 \newblock Learning to control a low-cost manipulator using data-efficient reinforcement learning.
-\newblock In Hugh Durrant-Whyte, Nicholas Roy, and Pieter Abbeel, editors, \emph{Robotics: Science and Systems VII}, 2012.
+\newblock In Durrant-Whyte, H., Roy, N., and Abbeel, P. (eds.), \emph{Robotics: Science and Systems VII}, 2012.
 \newblock URL \url{https://www.roboticsproceedings.org/rss07/p08.pdf}.
 
+\bibitem[Hoster et~al.(2024)Hoster, Al-Sayed, Biessmann, Glaser, Hildebrand, Moric, and Nguyen]{hoster2024usinggameenginesmachine}
+Hoster, J., Al-Sayed, S., Biessmann, F., Glaser, A., Hildebrand, K., Moric, I., and Nguyen, T.~V.
+\newblock Using game engines and machine learning to create synthetic satellite imagery for a tabletop verification exercise.
+\newblock \emph{arXiv preprint arXiv:2404.11461}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2404.11461}.
+
 \bibitem[Jia et~al.(2023)Jia, Afaq, Ripka, Huda, and Ahmad]{app131910675}
-Feiyu Jia, Misha Afaq, Ben Ripka, Quamrul Huda, and Rafiq Ahmad.
+Jia, F., Afaq, M., Ripka, B., Huda, Q., and Ahmad, R.
 \newblock Vision- and lidar-based autonomous docking and recharging of a mobile robot for machine tending in autonomous manufacturing environments.
 \newblock \emph{Applied Sciences}, 13\penalty0 (19), 2023.
 \newblock ISSN 2076-3417.
