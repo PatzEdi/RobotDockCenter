@@ -61,9 +61,9 @@ class BotMovementCriteria:
     def get_rotation_code(self, x):
         """ Get the rotation code based on the x coordinate of the target"""
         if x < 256:
-            return 0
+            return 0 # rotate left
 
-        return 1
+        return 1 # rotate right
 
 
     def get_is_target_detected(self, image):

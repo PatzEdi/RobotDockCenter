@@ -32,7 +32,7 @@ The sorting of data for the two separate models also means that each model may b
 
 
 \subsection{Model Training}
-Near the end of this paper, we describe how our methodology can be implemented using a single YOLO model for object detection and prediction, all in one package. The reason why we have initially developed our project with custom models is because we more have flexibility regarding the architecture and performance of the models. By implementing the models using PyTorch, we can make lower level modifications to essentially see what the most conservative model is that can still perform well. This is important because we want to make sure that our model is as lightweight as possible. We don't want to have a model that is too heavy, because it will be running on a robot that has limited computational power.
+Near the end of this paper, we describe how our methodology can be implemented using a single YOLO model for object detection and prediction, all in one package. The reason why we have initially developed our project with custom models is because we more have flexibility regarding the architecture and performance of the models. By implementing the models using PyTorch, we can make lower level modifications to essentially see what the most conservative model is that can still perform well. This is important because we want to make sure that our model is as lightweight as possible while delivering adequate results. We don't want to have a model that is too heavy, because it will be running on a robot that has limited computational power.
 
 Our training process is quite standard and is as follows:
 \begin{enumerate}
@@ -47,16 +47,35 @@ The first, second, and third steps in the list above are all standard ways to tr
 In order to solve this, we implement our own vertical flip augmentation, which returns the transformed image and the transformed coordinates. This way, the model can learn to predict the correct coordinates, even if the image is flipped. The reason we only need to implement a vertical flip is because, if we also implemented the horizontal flip, the data would have very similar looking images, as the flipped images would be almost identical to the images taken on the other side of the robot during data gathering.
 
 \subsection{Inference}
-For inference, we use the trained model to predict the next action based on a single input frame. The `predict` function takes an image as input, preprocesses it, and outputs the predicted target coordinates.
+% In this section we talk about how we can use both models in order to guide the robot and make actions.
+For inference, we use the trained models to output the values necessary to determine the next action, all based on a single input frame. When targeting either one of the targets during the docking procedure, we use some mathematical boundaries to determine the action the robot should take.
+
+There are three areas the predicted coordinates can be in which are listed below. Each area corresponds to an action, which is referenced to in the server integration section:
+
+\begin{enumerate}
+	\item The coordinates are outside the boundaries of what is considered centered with the target. In this case, the robot should turn either left or right, depending on the side the coordinates are on.
+	\item The coordinates are inside the boundaries of what is considered centered with the target. In this case, the robot should move forward.
+	\item The coordinates are inside the boundaries of what is considered centered with the target, under a certain threshold. This is a special case where the robot moves forward a fixed amount, and only applues to the alignment target (target 1).
+\end{enumerate}
+
+\textbf{Here we add a diagram showing the three areas on an example image}
+
+
+For the third case, which only applies to the alignment target (target 1) the robot has reached the target if the predicted coordinates are within the boundaries for the robot to be considered centered with the target, but are under a certain threshold. So, if the predicted coordinates are within a bottom center area of the image, the robot should move forward a fixed amount. The reason we move forward a fixed amount is because we want to be above the alignment target in order to ensure we are then centered with the docking station (target 2).
 
 \subsection{Server Integration}
-To facilitate real-time predictions, we can integrate the inference script with a Flask server, as shown in . The server receives images via POST requests, runs the inference, and returns the next action the virtual robot should take. This setup allows for seamless integration with other systems and real-time decision-making.
+To facilitate real-time predictions, we can integrate the inference script with a Flask server. The server receives images via POST requests, runs the inference, and returns the next action the virtual robot should take, which is either action 0 or 1 (turn left or right), action 2 (move forward), and action 3 (our special case when having reached target 1, where we move forward a fixed amount, as explained earlier). We do this in our virtual environment so that our GDScript can communicate with the Python script. The Python script is running the server, and the GDScript is sending the images to the server. The server then sends back the action the robot should take. In reality, however, we would have the robot do everything on its own, without the need for a server.
 
 \subsection{Evaluation}
+\textbf{Todo: Determine if this section is necessary.}
 We evaluate the performance of our model using various metrics, including accuracy and loss values. The evaluation scripts are included in [tests/tests.py](tests/tests.py), which contain unit tests to ensure the correctness and robustness of our data processing and model training pipelines.
 
 \subsection{Experimental Setup}
-Our experimental setup involves running the training and inference scripts on a machine with a GPU to accelerate the deep learning computations. The models are saved in the [models](models) directory, and the results are analyzed and visualized using matplotlib.
+The experimental setup we have presented so far is about the virtual world and the docking procedure. However, we also need to consider the hardware requirements for the training of our models, and what it took for us to get the running.
+
+The models were trained on an M1 Macbook Air with 16 GB of RAM. The training process took around 40 minutes for each model using the CPU, and around 15-20 minutes using the GPU through PyTorch's MPS backend. The models trained using the hardware mentioned were the ones used to make our conclusions. Our purpose of training the models on a Macbook Air, or any other computational device without expensive hardware, is to show that our methodology is robust and that our inference requires very little computational power.
+
+As far as the Godot game engine, the version used was 4.3.
 
 \subsection{Conclusion}
 Our methodology demonstrates a novel approach to robot docking using monocular vision and deep learning. By leveraging a simulated environment for data collection and a robust training pipeline, we achieve accurate and efficient docking without the need for additional sensors or reinforcement learning.
