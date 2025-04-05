@@ -48,7 +48,7 @@ var model = 1 # select either 1 or 2 to determine whether or not images & their 
 var target # This will either by rline_pos or DockIndicator.transform.origin, based on the model selected above (1 or 2).
 
 # boolean value to determine whether or not the camera should save its viewport image to the disk or not.
-var save_images = false 
+var save_images = false
 # Used to determine the name of the text file to use depending on the model chosen above
 # This below is used to determine where to save the images, based on the model chosen.
 var data_images_folder = "data_images"

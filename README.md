@@ -14,7 +14,7 @@ This project utilizes the Godot game engine in order to train & inference on syn
 **A new method is being implemented and tested.** Before, we relied strictly on game engine labels for training, which were unrealistic to get in the real world. This new version works slightly differently, but is actually possible to translate to the real world. You can read more about it [here](/docs/the_new_method.md).
 
 ## **Current Godot Engine Version Used:**
-**4.3**
+**4.4**
 
 **Docking Demo (2-4-25)**
 > [!NOTE]
