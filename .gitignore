@@ -4,15 +4,22 @@
 *.cache
 *.md5
 *.ctex
-*.png
-!assets/latest_loss_curve.png
 *.translation
 *.pth
 *.csv
+
+# Vim swap files
 *.swp
 *.swo
-.vscode
 
+# If using VSCode, you might want to ignore the workspace storage:
+.vscode
+# Png rules (general images)
+src/godot/data_images/*.png
+src/godot/frames_testing/*.png
+!assets/latest_loss_curve.png
+
+# Tex stuff mostly (for paper)
 *.gz
 *.log
 *.out
@@ -23,15 +30,6 @@
 
 # We don't need the generatable files from godot:
 src/godot/.godot/
-
-# We also only want to include important tex files for the paper:
-paper/tex/*.gz
-paper/tex/*.log
-paper/tex/*.out
-paper/tex/*.fls
-paper/tex/*.fdb_latexmk
-paper/tex/*.aux
-paper/tex/*.blg
 
 # For the linter we are using:
 ruff.toml
