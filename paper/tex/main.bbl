@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -30,5 +30,13 @@ Jia, F., Afaq, M., Ripka, B., Huda, Q., and Ahmad, R.
 \newblock ISSN 2076-3417.
 \newblock \doi{10.3390/app131910675}.
 \newblock URL \url{https://www.mdpi.com/2076-3417/13/19/10675}.
+
+\bibitem[Singh \& Singh(2020)Singh and Singh]{SINGH2020105524}
+Singh, D. and Singh, B.
+\newblock Investigating the impact of data normalization on classification performance.
+\newblock \emph{Applied Soft Computing}, 97:\penalty0 105524, 2020.
+\newblock ISSN 1568-4946.
+\newblock \doi{https://doi.org/10.1016/j.asoc.2019.105524}.
+\newblock URL \url{https://www.sciencedirect.com/science/article/pii/S1568494619302947}.
 
 \end{thebibliography}

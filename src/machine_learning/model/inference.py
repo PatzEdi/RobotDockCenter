@@ -152,7 +152,7 @@ class PltInferenceView(InferenceTools):
 
 if __name__ == "__main__":
     # Let's just manually set the model num for now
-    model_num = 2
+    model_num = 1
     inference_tools = InferenceTools()
     # Load some stuff based on model num
     inference_tools.load_model(model_num)
