@@ -9,8 +9,7 @@ The data camera is not randomly moving, and then taking a picture. Rather, it mo
 \input{figures/virtual_world_labeled.tex}
 
 The reason we want to collect our data this way is because we want to make our data inclusive. With randomization, we don't know for sure if there will be images that are extremely similar, and we don't know if each angle is represented fairly. The diagram below shows what the data camera movement looks like from a bird's eye view.
-
-\textbf{Data Camera Movement figure here}
+\input{figures/data_camera_movement_algo.tex}
 
 \subsection{Data Preprocessing}
 We preprocess the collected images in order to have a dataset of images and their corresponding target values. In order to do this, we use OpenCV to detect the targets. This is really only a viable option due to the fact that we chose unique colors for our targets that aren't present anywhere else in the virtual world. In real life, contour detection like this wouldn't work, and we would need to manually label where the targets are.

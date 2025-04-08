@@ -1,18 +1,19 @@
-\documentclass{article}
+\documentclass[twocolumn]{article}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{subfigure}
 \usepackage{booktabs} % for professional tables
 \usepackage{hyperref}
 \usepackage{xurl}  % Better URL line breaking
 \usepackage{silence}
+\usepackage{natbib}
 %Disable all warnings issued by latex starting with "You have..."
 \WarningFilter{latex}{You have requested package}
 
 % Attempt to make hyperref and algorithmic work together better:
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 
-\usepackage{utils/icml2025}
 % \usepackage{utils/icml2025}
 % For theorems and such
 \usepackage{amsmath}
@@ -37,73 +38,31 @@
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
-
-
-% Todonotes is useful during development; simply uncomment the next line
-%    and comment out the line below the next line to turn off comments
-%\usepackage[disable,textsize=tiny]{todonotes}
-\usepackage[textsize=tiny]{todonotes}
-
-% The \icmltitle you define below is probably too long as a header.
-% Therefore, a short form for the running title is supplied here:
-\begin{document}
-
-\twocolumn[
-\icmltitle{RobotDockCenter: A Supervised Learning Approach to Robot Docking Using Monocular Vision}
-
-\icmlsetsymbol{equal}{*}
-
-\begin{icmlauthorlist}
-\icmlauthor{Edward Ferrari}{ind}
-\end{icmlauthorlist}
-
-\icmlaffiliation{ind}{Independent Researcher}
-
-% You may provide any keywords that you
-% find helpful for describing your paper; these are used to populate
-% the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{Long Text Rendering Dataset}
-
-\vskip 0.3in
-]
-
-% this must go after the closing bracket ] following \twocolumn[ ...
-
-% This command actually creates the footnote in the first column
-% listing the affiliations and the copyright notice.
-% The command takes one argument, which is text to display at the start of the footnote.
-% The \icmlEqualContribution command is standard text for equal contribution.
-% Remove it (just {}) if you do not need this facility.
-
-%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
-% \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
-
-
-% Title and author information
+% Title, author, date & other info
+\title{RobotDockCenter: A Supervised Learning Approach to Robot Docking using Monocular Vision}
+\author{Edward Ferrari}
 \date{\today}
 
+\begin{document}
+\maketitle
 
+%Sections
 \input{sections/0_Abstract}
 
 \input{sections/1_Introduction}
 
-% \input{tables/dataset_statics}
-
 \input{sections/2_RelatedWork}
-
 
 \input{sections/3_Methodology}
 
-
 \input{sections/4_ExperimentalResults}
-
 
 \input{sections/5_Discussion}
 
 \input{sections/6_Conclusion}
 
-% References
-\bibliographystyle{utils/icml2025}
+% References (bibtex)
+\bibliographystyle{plainnat}
 \bibliography{main}
 
 \end{document}

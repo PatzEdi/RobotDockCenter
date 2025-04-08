@@ -27,6 +27,8 @@ src/godot/frames_testing/*.png
 *.fdb_latexmk
 *.aux
 *.blg
+# ICML utils that we ignore for now... (we might adopt ICML again later...)
+paper/tex/utils/*
 
 # We don't need the generatable files from godot:
 src/godot/.godot/
