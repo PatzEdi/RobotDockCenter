@@ -1,15 +1,21 @@
 \documentclass[twocolumn]{article}
+
+\usepackage{silence}
+% Disable all warnings that are annoying and make no sense
+\WarningFilter{latex}{You have requested package}
+\WarningFilter{latex}{Command \underbar}
+\WarningFilter{latex}{Command \underline}
+
+\usepackage{sectsty}
+\usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{subfigure}
 \usepackage{booktabs} % for professional tables
-\usepackage{hyperref}
 \usepackage{xurl}  % Better URL line breaking
-\usepackage{silence}
 \usepackage{natbib}
-%Disable all warnings issued by latex starting with "You have..."
-\WarningFilter{latex}{You have requested package}
+\usepackage[margin=2.5cm]{geometry}
 
 % Attempt to make hyperref and algorithmic work together better:
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
@@ -39,9 +45,15 @@
 \newtheorem{remark}[theorem]{Remark}
 
 % Title, author, date & other info
-\title{RobotDockCenter: A Supervised Learning Approach to Robot Docking using Monocular Vision}
+\title{\LARGE \textbf{RobotDockCenter: A Supervised Learning Approach to Robot Docking using Monocular Vision}}
+%\title{RobotDockCenter: A Supervised Learning Approach to Robot Docking using Monocular Vision}
 \author{Edward Ferrari}
 \date{\today}
+
+% Some formatting options
+\setlength{\parskip}{.3em} % Paragraph spacing
+\setlength{\columnsep}{.5cm} 
+\sectionfont{\normalsize} % Options: \small, \normalsize, \large, etc.
 
 \begin{document}
 \maketitle

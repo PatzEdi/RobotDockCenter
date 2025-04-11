@@ -26,13 +26,13 @@ Our data is then sorted into two sets of data, one set specifically for the alig
 
 \textbf{Here we add an image that includes the alignment target but not the docking target)}
 
-This sorting of data for each model is done through OpenCV. If contour detection is not present for one of the targets, the image is not included in the dataset for the image not found. This applies to both targets in the same function, meaning, if no targets are found, the image is essentially discarded. Again, using OpenCV for these operations is highly possible because we are in a virtual environment where the colors of the targets are unique to themselves.
+This sorting of data for each model is done through OpenCV. If contour detection is not present for one of the targets, the image is not included in the dataset for the target not found. This applies to both targets in the same function, meaning, if no targets are found, the image is essentially discarded. Again, using OpenCV for these operations is highly possible because we are in a virtual environment where the colors of the targets are unique to themselves.
 
-The sorting of data for the two separate models also means that each model may be performed differently. However, in our data collection, the difference in image amount was around 500 (\textbf{CHECK THIS NUMBER}). This is not a significant difference, and we can still train the models in very similar ways. The only difference is that the model that has less images may have a lower accuracy, which is where our custom data augmentation comes in.
+The sorting of data for the two separate models also means that each model may be performed differently. However, in our data collection, the difference in image amount was around 1,148, meaning we had 1,148 more images for the target we focused on. This is not a concerning difference, and we can still train the models in very similar ways. The only difference is that the model that has less images may have a lower accuracy, which is where our custom data augmentation comes in.
 
 
 \subsection{Model Training}
-Near the end of this paper, we describe how our methodology can be implemented using a single YOLO model for object detection and prediction, all in one package. The reason why we have initially developed our project with custom models is because we more have flexibility regarding the architecture and performance of the models. By implementing the models using PyTorch, we can make lower level modifications to essentially see what the most conservative model is that can still perform well. This is important because we want to make sure that our model is as lightweight as possible while delivering adequate results. We don't want to have a model that is too heavy, because it will be running on a robot that has limited computational power.
+Near the end of this paper, we describe how our methodology can be implemented using a single YOLO model for object detection and prediction, all in one package. The reason why we have initially developed our project with custom models is because we have more flexibility regarding the architecture and performance of the models. By implementing the models using PyTorch, we can make lower level modifications to essentially see what the most conservative model is that can still perform well. This is important because we want to make sure that our model is as lightweight as possible while delivering adequate results. We don't want to have a model that is too heavy, because it will be running on a robot that has limited computational power.
 
 Our training process is quite standard and is as follows:
 \begin{enumerate}
@@ -55,7 +55,7 @@ There are three areas the predicted coordinates can be in which are listed below
 \begin{enumerate}
 	\item The coordinates are outside the boundaries of what is considered centered with the target. In this case, the robot should turn either left or right, depending on the side the coordinates are on.
 	\item The coordinates are inside the boundaries of what is considered centered with the target. In this case, the robot should move forward.
-	\item The coordinates are inside the boundaries of what is considered centered with the target, under a certain threshold. This is a special case where the robot moves forward a fixed amount, and only applues to the alignment target (target 1).
+	\item The coordinates are inside the boundaries of what is considered centered with the target, under a certain threshold. This is a special case where the robot moves forward a fixed amount, and only applies to the alignment target (target 1).
 \end{enumerate}
 
 \textbf{Here we add a diagram showing the three areas on an example image}
@@ -87,11 +87,9 @@ Again, we incorporate such a process in the first place because we are dealing w
 We evaluate the performance of our model using various metrics, including accuracy and loss values. The evaluation scripts are included in [tests/tests.py](tests/tests.py), which contain unit tests to ensure the correctness and robustness of our data processing and model training pipelines.
 
 \subsection{Experimental Setup}
-The experimental setup we have presented so far is about the virtual world and the docking procedure. However, we also need to consider the hardware requirements for the training of our models, and what it took for us to get the running.
+The experimental setup we have presented so far is about the virtual world and the docking procedure. However, we also need to consider the hardware requirements for the training of our models, and what it took for us to get them running.
 
 The models were trained on an M1 Macbook Air with 16 GB of RAM. The training process took around 40 minutes for each model using the CPU, and around 15-20 minutes using the GPU through PyTorch's MPS backend. The models trained using the hardware mentioned were the ones used to make our conclusions. Our purpose of training the models on a Macbook Air, or any other computational device without expensive hardware, is to show that our methodology is robust and that our inference requires very little computational power.
-
-As far as the Godot game engine, the version used was 4.3.
 
 \subsection{Conclusion}
 The methods used to get synthetic data were simple yet effective. We used the Godot game engine, which runs efficiently on low-power hardware (such as an arm chip MacBook), and we used OpenCV to obtain ground truth data. Using this data, we sorted it and trained our custom models, of which we had low-level control of to determine sufficient proficiency at an efficient computational cost. Our methodologies can be expanded in a similar manner to real-world applications and images, with the only difference being that we would need to manually gather and label the images instead of having them automatically taken by Godot and labeled using OpenCV.
