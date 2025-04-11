@@ -24,7 +24,7 @@ Where \(n\) is the number of points in the contour, and \(x_i\) and \(y_i\) are 
 
 Our data is then sorted into two sets of data, one set specifically for the alignment target, and one specifically for the docking station. The reason we do this is because our custom models are not trained the same way YOLO models are trained, meaning we can't know for sure if the object is actually in frame. So, if one target is in an image, it doesn't necessarily mean that the other one is as well. The two sets of data share images, but one set may have more or less images than the other. This is because at some angles, one target may be visible while the other is not. In our case, the set of data that has more images is the one where we focused the target on during data gathering in the Godot game engine, which was target 1 (the green target). 
 
-\textbf{Here we add an image that includes the alignment target but not the docking target)}
+\input{figures/target_1_but_not_target_2.tex}
 
 This sorting of data for each model is done through OpenCV. If contour detection is not present for one of the targets, the image is not included in the dataset for the target not found. This applies to both targets in the same function, meaning, if no targets are found, the image is essentially discarded. Again, using OpenCV for these operations is highly possible because we are in a virtual environment where the colors of the targets are unique to themselves.
 
