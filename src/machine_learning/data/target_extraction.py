@@ -133,6 +133,20 @@ def iterate_through_images(image_data):
         plot_image_with_points(image)
 
 
+def plot_image_contour_surround(image_path):
+
+    points = get_contour_points(image_path)
+    green_points_x = [point[0] for point in points[0]]
+    green_points_y = [point[1] for point in points[0]]
+    
+    image = cv2.imread(image_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    plt.imshow(image)
+    # Plot the points on the image
+    plt.scatter(green_points_x, green_points_y, color="red", s=10)
+    # Show the image:
+    plt.show()
+
 if __name__ == "__main__":
 
 
