@@ -117,10 +117,11 @@ def plot_image_with_points(image_data):
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     plt.imshow(image)
-    print(x_avg)
-    print(y_avg)
+    print("Coords:")
+    print(x_avg*512)
+    print(y_avg*512)
     # Plot the points on the image
-    plt.scatter(x_avg, y_avg, color="red")
+    plt.scatter(x_avg*512, y_avg*512, color="red")
     plt.show()
 
 # We first extract the contour points via opencv
@@ -146,7 +147,6 @@ if __name__ == "__main__":
     print(f"Num red images: {len(red_image_data)}")
     print(len(green_image_data))
     print(len(red_image_data))
-    exit()
     # Note: Obviously, since we have one set of images, which is focused on the
     # green/first target, there will be more green images than red images. This
     # should't be a problem though, as there are still around 3800 images for red,
