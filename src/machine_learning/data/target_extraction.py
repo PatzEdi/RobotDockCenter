@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # Get the target points. If you want a set amount per class, you can
     # specify the amount with the n_images_cls parameter. If left blank,
     # all images will be loaded
-    green_image_data, red_image_data = get_images_for_each_target(data_dir, n_images_cls=10)
+    green_image_data, red_image_data = get_images_for_each_target(data_dir, n_images_cls=12)
     print(f"Num green images: {len(green_image_data)}")
     print(f"Num red images: {len(red_image_data)}")
     print(len(green_image_data))
@@ -165,9 +165,33 @@ if __name__ == "__main__":
     # green/first target, there will be more green images than red images. This
     # should't be a problem though, as there are still around 3800 images for red,
     # when compared to around 4500 images for green
+    # Just some testing here...
+    test_image_path = green_image_data[11][0]
+    
+    # Our reference image:
+    contour_image = cv2.imread(test_image_path)
+    average_image = contour_image.copy() # Create a copy
+    
+    points = get_contour_points(test_image_path)
+    
+    green_points_x = [point[0] for point in points[0]]
+    green_points_y = [point[1] for point in points[0]]
 
-
-
-    test = True
-    if test:
+    # Plot the green points using cv2.circle
+    for i in range(len(green_points_x)):
+        cv2.circle(contour_image, (green_points_x[i], green_points_y[i]), 2, (0, 0, 255), -1)
+    
+    x_avg, y_avg = green_image_data[11][1].tolist()
+    cv2.circle(average_image, (int(x_avg*512), int(y_avg*512)), 5, (0, 0, 255), -1)
+    
+    # Add text to the images:
+    # For the average_image, we put "After", on the contour we but "Before"
+    cv2.putText(contour_image, "Before", (220, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 2)
+    cv2.putText(average_image, "After", (220, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 2)
+    
+    # Save the images:
+    cv2.imwrite(os.path.expanduser("~/Downloads/contour_image.png"), contour_image)
+    cv2.imwrite(os.path.expanduser("~/Downloads/average_image.png"), average_image)
+    
+    if False:
         iterate_through_images(green_image_data)

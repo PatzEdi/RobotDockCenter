@@ -19,7 +19,8 @@ Contour detection returns a list of coordinates that outline a target. We, howev
 \[
 	\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i ~\text{,} ~\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i
 \]
-\textbf{Here we add two images, one showing the outline of the target, and one showing the center of the target. (like a before and after)}
+\input{figures/contour_and_average.tex}
+
 Where \(n\) is the number of points in the contour, and \(x_i\) and \(y_i\) are the \(x\) and \(y\) parts of each point in the contour, respectively. This gives us a single coordinate for each target, which we can then use as our target value for training. Due to our images being 512x512 pixels, the coordinates are in range from 0 to 512 (for both \(x\) and \(y\)). This means that the coordinates are then normalized from 0 to 512 to 0-1 by dividing the coordinates by 512. This way, model training and inference becomes easier and more efficient, as we are not dealing with large numbers \citep{SINGH2020105524}. Of course, when it comes to inferencing, we then multiply the model's outputs by 512 to get the actual coordinate values. 
 
 Our data is then sorted into two sets of data, one set specifically for the alignment target, and one specifically for the docking station. The reason we do this is because our custom models are not trained the same way YOLO models are trained, meaning we can't know for sure if the object is actually in frame. So, if one target is in an image, it doesn't necessarily mean that the other one is as well. The two sets of data share images, but one set may have more or less images than the other. This is because at some angles, one target may be visible while the other is not. In our case, the set of data that has more images is the one where we focused the target on during data gathering in the Godot game engine, which was target 1 (the green target). 
@@ -74,7 +75,7 @@ To facilitate real-time predictions, we can integrate the inference script with 
 		0      & Turn left   \\ \hline
 		1      & Turn right  \\ \hline
 		2      & Move forward \\ \hline
-		3      & Move forward a fixed amount \\ \hline
+		3      & Move forward fixed amount \\ \hline
 	\end{tabular}
 \end{table}
 
