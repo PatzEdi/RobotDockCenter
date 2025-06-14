@@ -51,7 +51,7 @@ In order to solve this, we implement our own vertical flip augmentation, which r
 % In this section we talk about how we can use both models in order to guide the robot and make actions.
 For inference, we use the trained models to output the values necessary to determine the next action, all based on a single input frame. When targeting either one of the targets during the docking procedure, we use some mathematical boundaries to determine the action the robot should take.
 
-There are three areas the predicted coordinates can be in which are listed below. Each area corresponds to an action, which is referenced to in the server integration section:
+There are three situations the predicted coordinates can be in which are listed below. Each area corresponds to an action, which is referenced to in the server integration section:
 
 \begin{enumerate}
 	\item The coordinates are outside the boundaries of what is considered centered with the target. In this case, the robot should turn either left or right, depending on the side the coordinates are on.
@@ -59,8 +59,7 @@ There are three areas the predicted coordinates can be in which are listed below
 	\item The coordinates are inside the boundaries of what is considered centered with the target, under a certain threshold. This is a special case where the robot moves forward a fixed amount, and only applies to the alignment target (target 1).
 \end{enumerate}
 
-\textbf{Here we add a diagram showing the three areas on an example image}
-
+\input{figures/three_situations.tex}
 
 For the third case, which only applies to the alignment target (target 1) the robot has reached the target if the predicted coordinates are within the boundaries for the robot to be considered centered with the target, but are under a certain threshold. So, if the predicted coordinates are within a bottom center area of the image, the robot should move forward a fixed amount. The reason we move forward a fixed amount is because we want to be above the alignment target in order to ensure we are then centered with the docking station (target 2).
 
