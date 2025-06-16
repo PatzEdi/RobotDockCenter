@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -38,5 +38,10 @@ Dalwinder Singh and Birmohan Singh.
 \newblock ISSN 1568-4946.
 \newblock \doi{https://doi.org/10.1016/j.asoc.2019.105524}.
 \newblock URL \url{https://www.sciencedirect.com/science/article/pii/S1568494619302947}.
+
+\bibitem[Yang et~al.(2024)Yang, Kang, Huang, Zhao, Xu, Feng, and Zhao]{depth_anything_v2}
+Lihe Yang, Bingyi Kang, Zilong Huang, Zhen Zhao, Xiaogang Xu, Jiashi Feng, and Hengshuang Zhao.
+\newblock Depth anything v2.
+\newblock \emph{arXiv:2406.09414}, 2024.
 
 \end{thebibliography}
