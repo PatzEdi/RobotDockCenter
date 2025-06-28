@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -30,6 +30,12 @@ Feiyu Jia, Misha Afaq, Ben Ripka, Quamrul Huda, and Rafiq Ahmad.
 \newblock ISSN 2076-3417.
 \newblock \doi{10.3390/app131910675}.
 \newblock URL \url{https://www.mdpi.com/2076-3417/13/19/10675}.
+
+\bibitem[Quilez et~al.(2015)Quilez, Zeeman, Mitton, and Vandaele]{quilez:hal-01147332}
+Roberto Quilez, Adriaan Zeeman, Nathalie Mitton, and Julien Vandaele.
+\newblock {Docking autonomous robots in passive docks withInfrared sensors and QR codes}.
+\newblock In \emph{{International Conference on Testbeds and Research Infrastructures for the Development of Networks \& Communities (TridentCOM)}}, Vancouver, Canada, June 2015.
+\newblock URL \url{https://inria.hal.science/hal-01147332}.
 
 \bibitem[Singh and Singh(2020)]{SINGH2020105524}
 Dalwinder Singh and Birmohan Singh.
