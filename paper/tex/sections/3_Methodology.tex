@@ -21,16 +21,15 @@ Contour detection returns a list of coordinates that outline a target. We, howev
 \]
 \input{figures/contour_and_average.tex}
 
-Where \(n\) is the number of points in the contour, and \(x_i\) and \(y_i\) are the \(x\) and \(y\) parts of each point in the contour, respectively. This gives us a single coordinate for each target, which we can then use as our target value for training. Due to our images being 512x512 pixels, the coordinates are in range from 0 to 512 (for both \(x\) and \(y\)). This means that the coordinates are then normalized from 0 to 512 to 0-1 by dividing the coordinates by 512. This way, model training and inference becomes easier and more efficient, as we are not dealing with large numbers \citep{SINGH2020105524}. Of course, when it comes to inferencing, we then multiply the model's outputs by 512 to get the actual coordinate values. 
+Where \(n\) is the number of points in the contour, and \(x_i\) and \(y_i\) are the \(x\) and \(y\) parts of each point in the contour, respectively. This gives us a single coordinate for each target, which we can then use as our target value for training. Due to our images being 512x512 pixels, the coordinates are in range from 0 to 512 (for both \(x\) and \(y\)). This means that the coordinates are then normalized from 0 to 512 to 0-1 by dividing the coordinates by 512. This way, model training and inference becomes easier and more efficient, as we are not dealing with large numbers \citep{SINGH2020105524}. Of course, when it comes to inferencing, we then multiply the model's outputs by 512 to get the actual coordinate values.
 
-Our data is then sorted into two sets of data, one set specifically for the alignment target, and one specifically for the docking station. The reason we do this is because our custom models are not trained the same way YOLO models are trained, meaning we can't know for sure if the object is actually in frame. So, if one target is in an image, it doesn't necessarily mean that the other one is as well. The two sets of data share images, but one set may have more or less images than the other. This is because at some angles, one target may be visible while the other is not. In our case, the set of data that has more images is the one where we focused the target on during data gathering in the Godot game engine, which was target 1 (the green target). 
+Our data is then sorted into two sets of data, one set specifically for the alignment target, and one specifically for the docking station. The reason we do this is because our custom models are not trained the same way YOLO models are trained, meaning we can't know for sure if the object is actually in frame. So, if one target is in an image, it doesn't necessarily mean that the other one is as well. The two sets of data share images, but one set may have more or less images than the other. This is because at some angles, one target may be visible while the other is not. In our case, the set of data that has more images is the one where we focused the target on during data gathering in the Godot game engine, which was target 1 (the green target).
 
 \input{figures/target_1_but_not_target_2.tex}
 
 This sorting of data for each model is done through OpenCV. If contour detection is not present for one of the targets, the image is not included in the dataset for the target not found. This applies to both targets in the same function, meaning, if no targets are found, the image is essentially discarded. Again, using OpenCV for these operations is highly possible because we are in a virtual environment where the colors of the targets are unique to themselves.
 
 The sorting of data for the two separate models also means that each model may be performed differently. However, in our data collection, the difference in image amount was around 1,148, meaning we had 1,148 more images for the target we focused on. This is not a concerning difference, and we can still train the models in very similar ways. The only difference is that the model that has less images may have a lower accuracy, which is where our custom data augmentation comes in.
-
 
 \subsection{Model Training}
 Near the end of this paper, we describe how our methodology can be implemented using a single YOLO model for object detection and prediction, all in one package. The reason why we have initially developed our project with custom models is because we have more flexibility regarding the architecture and performance of the models. By implementing the models using PyTorch, we can make lower level modifications to essentially see what the most conservative model is that can still perform well. This is important because we want to make sure that our model is as lightweight as possible while delivering adequate results. We don't want to have a model that is too heavy, because it will be running on a robot that has limited computational power.
@@ -43,7 +42,7 @@ Our training process is quite standard and is as follows:
     \item Train the model over multiple epochs, applying custom image augmentation techniques to improve generalization.
 \end{enumerate}
 
-The first, second, and third steps in the list above are all standard ways to train a PyTorch model, or any basic deep learning model like the one we are creating. For the fourth step, the reason we need to apply custom image augmentation is because of coordinate predictions on the image. If we use the built-in method of image augmentation that PyTorch provides, the coordinates of the data will be off. The image is being transformed, but the coordinates are not. 
+The first, second, and third steps in the list above are all standard ways to train a PyTorch model, or any basic deep learning model like the one we are creating. For the fourth step, the reason we need to apply custom image augmentation is because of coordinate predictions on the image. If we use the built-in method of image augmentation that PyTorch provides, the coordinates of the data will be off. The image is being transformed, but the coordinates are not.
 
 In order to solve this, we implement our own vertical flip augmentation, which returns the transformed image and the transformed coordinates. This way, the model can learn to predict the correct coordinates, even if the image is flipped. The reason we only need to implement a vertical flip is because, if we also implemented the horizontal flip, the data would have very similar looking images, as the flipped images would be almost identical to the images taken on the other side of the robot during data gathering.
 
@@ -64,9 +63,9 @@ There are three situations the predicted coordinates can be in which are listed 
 For the third case, which only applies to the alignment target (target 1) the robot has reached the target if the predicted coordinates are within the boundaries for the robot to be considered centered with the target, but are under a certain threshold. So, if the predicted coordinates are within a bottom center area of the image, the robot should move forward a fixed amount. The reason we move forward a fixed amount is because we want to be above the alignment target in order to ensure we are then centered with the docking station (target 2).
 
 \subsection{Server Integration}
-To facilitate real-time predictions, we can integrate the inference script with a Flask server. The server receives images via POST requests, runs the inference, and returns the next action the virtual robot should take. The actions possible are shown in the table below: 
+To facilitate real-time predictions, we can integrate the inference script with a Flask server. The server receives images via POST requests, runs the inference, and returns the next action the virtual robot should take. The actions possible are shown in the table below:
 
-\begin{table}[H]
+\begin{table}[htbp]
 	\centering
 	\begin{tabular}{|c|c|}
 		\hline
@@ -76,6 +75,8 @@ To facilitate real-time predictions, we can integrate the inference script with 
 		2      & Move forward \\ \hline
 		3      & Move forward fixed amount \\ \hline
 	\end{tabular}
+	\caption{Robot action codes and their descriptions.}
+	\label{tab:robot_actions}
 \end{table}
 
 We use a Flask server so that GDScript can communicate with the Python script. The Python script is running the server, and the GDScript is sending the encoded images to it. The server then sends back the action the robot should take.
